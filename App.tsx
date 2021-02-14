@@ -1,11 +1,14 @@
 import "react-native-gesture-handler";
 import React, { FC } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StatusBar } from "expo-status-bar";
 import AppLoading from "expo-app-loading";
 import { useFonts } from "expo-font";
 import { enableScreens } from "react-native-screens";
+import { Provider } from "react-redux";
 
 import Fonts from "./constants/fonts";
+import store from "./store";
+import AppNavigator from "./navigation/AppNavigator";
 
 enableScreens();
 
@@ -20,19 +23,13 @@ const App: FC = () => {
   }
 
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-    </View>
+    <>
+      <StatusBar style="light" />
+      <Provider store={store}>
+        <AppNavigator />
+      </Provider>
+    </>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});
 
 export default App;

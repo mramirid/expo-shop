@@ -1,6 +1,6 @@
 # Expo Shop
 
-A simple online shop app built with React Native
+A simple online shop app built with React Native, React Navigation v5 & Redux Toolkit
 
 <br>
 
