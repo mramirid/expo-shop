@@ -1,19 +1,21 @@
 import React, { FC } from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 
-import { ProductsOverviewStackParamList } from "./types";
+import { ProductsStackParamList } from "./types";
 import { defaultStackScreenOptions } from "../contants";
 import ProductsOverviewScreen from "../../screens/shop/ProductsOverviewScreen";
+import ProductDetailScreen from "../../screens/shop/ProductDetailScreen";
 
-const Stack = createStackNavigator<ProductsOverviewStackParamList>();
+const Stack = createStackNavigator<ProductsStackParamList>();
 
-const MealsStack: FC = () => (
+const ProductsStack: FC = () => (
   <Stack.Navigator screenOptions={defaultStackScreenOptions}>
     <Stack.Screen
       name="ProductsOverviewScreen"
       component={ProductsOverviewScreen}
     />
+    <Stack.Screen name="ProductDetailScreen" component={ProductDetailScreen} />
   </Stack.Navigator>
 );
 
-export default MealsStack;
+export default ProductsStack;

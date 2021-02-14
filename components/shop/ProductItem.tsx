@@ -1,10 +1,20 @@
-import React, { FC } from "react";
-import { View, StyleSheet, Image, Button } from "react-native";
+import React, { FC, JSXElementConstructor } from "react";
+import {
+  View,
+  StyleSheet,
+  Image,
+  Button,
+  TouchableNativeFeedbackProps,
+  TouchableOpacityProps,
+  TouchableOpacity,
+  Platform,
+  TouchableNativeFeedback,
+} from "react-native";
 
 import Colors from "../../constants/colors";
 import Product from "../../types/product";
-import BodyText from "./text/BodyText";
-import HeadingText from "./text/HeadingText";
+import BodyText from "../text/BodyText";
+import HeadingText from "../text/HeadingText";
 
 interface ProductItemProps {
   product: Product;
@@ -12,29 +22,48 @@ interface ProductItemProps {
   onAddToCart(): void;
 }
 
-const ProductItem: FC<ProductItemProps> = (props) => (
-  <View style={styles.product}>
-    <Image style={styles.image} source={{ uri: props.product.imageUrl }} />
-    <View style={styles.details}>
-      <HeadingText style={styles.title}>{props.product.title}</HeadingText>
-      <BodyText style={styles.price}>
-        ${props.product.price.toFixed(2)}
-      </BodyText>
+const ProductItem: FC<ProductItemProps> = (props) => {
+  let Touchable: JSXElementConstructor<
+    TouchableOpacityProps | TouchableNativeFeedbackProps
+  >;
+  if (Platform.OS === "android" && Platform.Version >= 21) {
+    Touchable = TouchableNativeFeedback;
+  } else {
+    Touchable = TouchableOpacity;
+  }
+  return (
+    <View style={styles.product}>
+      <Touchable onPress={props.onViewDetail} useForeground>
+        <View>
+          <Image
+            style={styles.image}
+            source={{ uri: props.product.imageUrl }}
+          />
+          <View style={styles.details}>
+            <HeadingText style={styles.title}>
+              {props.product.title}
+            </HeadingText>
+            <BodyText style={styles.price}>
+              ${props.product.price.toFixed(2)}
+            </BodyText>
+          </View>
+          <View style={styles.actions}>
+            <Button
+              color={Colors.Primary}
+              title="VIEW DETAILS"
+              onPress={props.onViewDetail}
+            />
+            <Button
+              color={Colors.Primary}
+              title="ADD TO CART"
+              onPress={props.onAddToCart}
+            />
+          </View>
+        </View>
+      </Touchable>
     </View>
-    <View style={styles.actions}>
-      <Button
-        color={Colors.Primary}
-        title="VIEW DETAILS"
-        onPress={props.onViewDetail}
-      />
-      <Button
-        color={Colors.Primary}
-        title="ADD TO CART"
-        onPress={props.onAddToCart}
-      />
-    </View>
-  </View>
-);
+  );
+};
 
 const styles = StyleSheet.create({
   product: {

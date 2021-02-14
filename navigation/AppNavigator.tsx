@@ -1,11 +1,11 @@
 import React, { FC } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 
-import ProductsOverviewStack from "./ProductsOverviewStack/ProductsOverviewStack";
+import ProductsStack from "./ProductsStack/ProductsStack";
 
 const AppNavigator: FC = () => (
   <NavigationContainer>
-    <ProductsOverviewStack />
+    <ProductsStack />
   </NavigationContainer>
 );
 

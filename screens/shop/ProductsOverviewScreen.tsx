@@ -2,14 +2,14 @@ import React, { FC, useLayoutEffect } from "react";
 import { FlatList, StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
-import { selectPublicProducts } from "../../store/reducers/products";
+import { selectProducts } from "../../store/reducers/products";
 import { useAppSelector } from "../../store/types";
-import { ProductsOverviewScreenNavProp } from "../../navigation/ProductsOverviewStack/types";
+import { ProductsOverviewScreenNavProp } from "../../navigation/ProductsStack/types";
 import ProductItem from "../../components/shop/ProductItem";
 
 const ProductsOverviewScreen: FC = () => {
   const navigation = useNavigation<ProductsOverviewScreenNavProp>();
-  const publicProducts = useAppSelector(selectPublicProducts);
+  const publicProducts = useAppSelector(selectProducts);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -24,7 +24,9 @@ const ProductsOverviewScreen: FC = () => {
       renderItem={(data) => (
         <ProductItem
           product={data.item}
-          onViewDetail={() => null}
+          onViewDetail={() => {
+            navigation.navigate("ProductDetailScreen", { product: data.item });
+          }}
           onAddToCart={() => null}
         />
       )}

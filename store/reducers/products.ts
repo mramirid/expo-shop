@@ -5,12 +5,12 @@ import Product from "../../types/product";
 import PRODUCTS from "../../data/products";
 
 export interface ProductsState {
-  publicProducts: Product[];
+  products: Product[];
   userProducts: Product[];
 }
 
 export const initialState: ProductsState = {
-  publicProducts: PRODUCTS,
+  products: PRODUCTS,
   userProducts: PRODUCTS.filter((product) => product.ownerId === "u1"),
 };
 
@@ -20,8 +20,6 @@ export const productsSlice = createSlice({
   reducers: {},
 });
 
-export const selectPublicProducts = (state: RootState) => {
-  return state.products.publicProducts;
-};
+export const selectProducts = (state: RootState) => state.products.products;
 
 export default productsSlice.reducer;
