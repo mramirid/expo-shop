@@ -1,6 +1,6 @@
 enum Colors {
   Primary = "#c2185b",
-  Accent = "#ffc107",
+  Accent = "#ff8f00",
   PrimaryLight = "#fa5788",
 }
 

@@ -5,12 +5,15 @@ import { View, ScrollView, Image, Button, StyleSheet } from "react-native";
 import {
   ProductDetailScreenNavProp,
   ProductDetailScreenRouteProp,
-} from "../../navigation/ProductsStack/types";
-import BodyText from "../../components/text/BodyText";
+} from "../../navigation/ShopStack/types";
+import BodyText from "../../components/ui/text/BodyText";
 import Colors from "../../constants/colors";
-import HeadingText from "../../components/text/HeadingText";
+import HeadingText from "../../components/ui/text/HeadingText";
+import { useAppDispatch } from "../../store/types";
+import { addToCart } from "../../store/reducers/cart";
 
 const ProductDetailScreen: FC = () => {
+  const dispatch = useAppDispatch();
   const navigation = useNavigation<ProductDetailScreenNavProp>();
   const { params } = useRoute<ProductDetailScreenRouteProp>();
 
@@ -27,7 +30,7 @@ const ProductDetailScreen: FC = () => {
         <Button
           title="ADD TO CART"
           color={Colors.Primary}
-          onPress={() => null}
+          onPress={() => dispatch(addToCart(params.product))}
         />
       </View>
       <HeadingText style={styles.price}>

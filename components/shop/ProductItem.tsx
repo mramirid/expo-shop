@@ -13,8 +13,9 @@ import {
 
 import Colors from "../../constants/colors";
 import Product from "../../types/product";
-import BodyText from "../text/BodyText";
-import HeadingText from "../text/HeadingText";
+import AppCard from "../ui/AppCard";
+import BodyText from "../ui/text/BodyText";
+import HeadingText from "../ui/text/HeadingText";
 
 interface ProductItemProps {
   product: Product;
@@ -32,7 +33,7 @@ const ProductItem: FC<ProductItemProps> = (props) => {
     Touchable = TouchableOpacity;
   }
   return (
-    <View style={styles.product}>
+    <AppCard style={styles.product}>
       <Touchable onPress={props.onViewDetail} useForeground>
         <View>
           <Image
@@ -61,7 +62,7 @@ const ProductItem: FC<ProductItemProps> = (props) => {
           </View>
         </View>
       </Touchable>
-    </View>
+    </AppCard>
   );
 };
 
@@ -69,14 +70,6 @@ const styles = StyleSheet.create({
   product: {
     height: 300,
     marginBottom: 20,
-    backgroundColor: "white",
-    borderRadius: 10,
-    shadowColor: "black",
-    shadowOpacity: 0.26,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 8,
-    elevation: 5,
-    overflow: "hidden",
   },
   image: {
     width: "100%",

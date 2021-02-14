@@ -1,12 +1,14 @@
 import React, { FC, useLayoutEffect } from "react";
 import { FlatList, StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { HeaderButtons, Item } from "react-navigation-header-buttons";
 
 import { selectProducts } from "../../store/reducers/products";
 import { useAppDispatch, useAppSelector } from "../../store/types";
-import { ProductsOverviewScreenNavProp } from "../../navigation/ProductsStack/types";
+import { ProductsOverviewScreenNavProp } from "../../navigation/ShopStack/types";
 import ProductItem from "../../components/shop/ProductItem";
 import { addToCart } from "../../store/reducers/cart";
+import AppHeaderButton from "../../components/ui/AppHeaderButton";
 
 const ProductsOverviewScreen: FC = () => {
   const dispatch = useAppDispatch();
@@ -16,6 +18,15 @@ const ProductsOverviewScreen: FC = () => {
   useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle: "All Products",
+      headerRight: () => (
+        <HeaderButtons HeaderButtonComponent={AppHeaderButton}>
+          <Item
+            title="Cart"
+            iconName="cart"
+            onPress={() => navigation.navigate("CartScreen")}
+          />
+        </HeaderButtons>
+      ),
     });
   }, [navigation]);
 

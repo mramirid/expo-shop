@@ -40,8 +40,10 @@ export const cartSlice = createSlice({
   },
 });
 
-export const selectCarts = (state: RootState) => state.cart.items;
-export const selectTotalAmount = (state: RootState) => state.cart.totalAmount;
+export const selectCartItems = (state: RootState) => state.cart.items;
+export const selectCartTotalAmount = (state: RootState) => {
+  return state.cart.totalAmount;
+};
 
 export const { addToCart } = cartSlice.actions;
 

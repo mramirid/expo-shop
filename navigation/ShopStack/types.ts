@@ -3,21 +3,27 @@ import { StackNavigationProp } from "@react-navigation/stack";
 
 import Product from "../../types/product";
 
-export type ProductsStackParamList = {
+export type ShopStackParamList = {
   ProductsOverviewScreen: undefined;
   ProductDetailScreen: { product: Product };
+  CartScreen: undefined;
 };
 
 export type ProductsOverviewScreenNavProp = StackNavigationProp<
-  ProductsStackParamList,
+  ShopStackParamList,
   "ProductsOverviewScreen"
 >;
 
 export type ProductDetailScreenRouteProp = RouteProp<
-  ProductsStackParamList,
+  ShopStackParamList,
   "ProductDetailScreen"
 >;
 export type ProductDetailScreenNavProp = StackNavigationProp<
-  ProductsStackParamList,
+  ShopStackParamList,
   "ProductDetailScreen"
+>;
+
+export type CartScreenNavProp = StackNavigationProp<
+  ShopStackParamList,
+  "CartScreen"
 >;
