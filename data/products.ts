@@ -43,7 +43,7 @@ const PRODUCTS: Product[] = [
     ownerId: "u3",
     title: "PowerBook",
     imageUrl:
-      "https://get.pxhere.com/photo/laptop-computer-macbook-mac-screen-water-board-keyboard-technology-air-mouse-photo-airport-aircraft-tablet-aviation-office-black-monitor-keys-graphic-hardware-image-pc-exhibition-multimedia-calculator-vector-water-cooling-floppy-disk-phased-out-desktop-computer-netbook-personal-computer-computer-monitor-electronic-device-computer-hardware-display-device-448748.jpg",
+      "https://c.pxhere.com/photos/c4/a9/computer_pc_mac_macbook_laptop_hardware_calculator_water_cooling-448748.jpg!d",
     description:
       "Awesome hardware, crappy keyboard and a hefty price. Buy now before a new one is released!",
     price: 2299.99,
