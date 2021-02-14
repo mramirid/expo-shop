@@ -8,6 +8,7 @@ import {
 } from "../../navigation/ProductsStack/types";
 import BodyText from "../../components/text/BodyText";
 import Colors from "../../constants/colors";
+import HeadingText from "../../components/text/HeadingText";
 
 const ProductDetailScreen: FC = () => {
   const navigation = useNavigation<ProductDetailScreenNavProp>();
@@ -29,9 +30,9 @@ const ProductDetailScreen: FC = () => {
           onPress={() => null}
         />
       </View>
-      <BodyText style={styles.price}>
+      <HeadingText style={styles.price}>
         ${params.product.price.toFixed(2)}
-      </BodyText>
+      </HeadingText>
       <BodyText style={styles.description}>
         {params.product.description}
       </BodyText>

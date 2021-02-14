@@ -3,11 +3,13 @@ import { FlatList, StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
 import { selectProducts } from "../../store/reducers/products";
-import { useAppSelector } from "../../store/types";
+import { useAppDispatch, useAppSelector } from "../../store/types";
 import { ProductsOverviewScreenNavProp } from "../../navigation/ProductsStack/types";
 import ProductItem from "../../components/shop/ProductItem";
+import { addToCart } from "../../store/reducers/cart";
 
 const ProductsOverviewScreen: FC = () => {
+  const dispatch = useAppDispatch();
   const navigation = useNavigation<ProductsOverviewScreenNavProp>();
   const publicProducts = useAppSelector(selectProducts);
 
@@ -27,7 +29,7 @@ const ProductsOverviewScreen: FC = () => {
           onViewDetail={() => {
             navigation.navigate("ProductDetailScreen", { product: data.item });
           }}
-          onAddToCart={() => null}
+          onAddToCart={() => dispatch(addToCart(data.item))}
         />
       )}
     />

@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   title: {
-    marginVertical: 4,
+    marginVertical: 2,
   },
   price: {
     fontSize: 14,

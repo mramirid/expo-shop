@@ -1,8 +1,8 @@
 export default interface Product {
-  id: string;
-  ownerId: string;
+  readonly id: string;
+  readonly ownerId: string;
   title: string;
   imageUrl: string;
   description: string;
-  price: number;
+  readonly price: number;
 }

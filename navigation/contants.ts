@@ -13,6 +13,6 @@ export const defaultStackScreenOptions: StackNavigationOptions = {
     fontFamily: Fonts.OpenSansRegular,
   },
   headerTitleStyle: {
-    fontFamily: Fonts.OpenSansRegular,
+    fontFamily: Fonts.OpenSansBold,
   },
 };
