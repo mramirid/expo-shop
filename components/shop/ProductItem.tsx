@@ -50,12 +50,12 @@ const ProductItem: FC<ProductItemProps> = (props) => {
           </View>
           <View style={styles.actions}>
             <Button
-              color={Colors.Primary}
+              color={Colors.Accent}
               title="VIEW DETAILS"
               onPress={props.onViewDetail}
             />
             <Button
-              color={Colors.Primary}
+              color={Colors.Accent}
               title="ADD TO CART"
               onPress={props.onAddToCart}
             />

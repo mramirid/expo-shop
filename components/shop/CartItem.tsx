@@ -14,13 +14,13 @@ interface CartItemProps {
 
 const CartItem: FC<CartItemProps> = (props) => (
   <View style={styles.cartItem}>
-    <View style={styles.itemInfo}>
+    <View style={styles.itemInfo1}>
       <BodyText style={styles.qty}>{props.cartItem.qty}</BodyText>
-      <HeadingText style={styles.headingText}>
+      <HeadingText numberOfLines={1} style={styles.headingText}>
         {props.cartItem.title}
       </HeadingText>
     </View>
-    <View style={styles.itemInfo}>
+    <View style={styles.itemInfo2}>
       <HeadingText style={styles.headingText}>
         ${(props.cartItem.price * props.cartItem.qty).toFixed(2)}
       </HeadingText>
@@ -38,9 +38,16 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
   },
-  itemInfo: {
+  itemInfo1: {
+    width: "50%",
     flexDirection: "row",
     alignItems: "center",
+  },
+  itemInfo2: {
+    width: "50%",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-end",
   },
   qty: {
     color: "#888",

@@ -1,5 +1,3 @@
-import "react-native-get-random-values";
-import { nanoid } from "nanoid";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { RootState } from "../types";
@@ -28,7 +26,6 @@ export const cartSlice = createSlice({
         state.items[itemIndex].qty++;
       } else {
         state.items.push({
-          id: nanoid(),
           productId: action.payload.id,
           title: action.payload.title,
           price: action.payload.price,
@@ -36,6 +33,17 @@ export const cartSlice = createSlice({
         });
       }
       state.totalAmount += action.payload.price;
+    },
+    removeItem(state, action: PayloadAction<string>) {
+      const itemIndex = state.items.findIndex(
+        (item) => item.productId === action.payload,
+      );
+      state.totalAmount -= state.items[itemIndex].price;
+      if (state.items[itemIndex].qty > 1) {
+        state.items[itemIndex].qty--;
+      } else {
+        state.items.splice(itemIndex, 1);
+      }
     },
   },
 });
@@ -45,6 +53,6 @@ export const selectCartTotalAmount = (state: RootState) => {
   return state.cart.totalAmount;
 };
 
-export const { addToCart } = cartSlice.actions;
+export const { addToCart, removeItem } = cartSlice.actions;
 
 export default cartSlice.reducer;

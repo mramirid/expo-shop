@@ -29,7 +29,7 @@ const ProductDetailScreen: FC = () => {
       <View style={styles.action}>
         <Button
           title="ADD TO CART"
-          color={Colors.Primary}
+          color={Colors.Accent}
           onPress={() => dispatch(addToCart(params.product))}
         />
       </View>

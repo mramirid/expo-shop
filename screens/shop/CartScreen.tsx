@@ -10,12 +10,14 @@ import Colors from "../../constants/colors";
 import CartItem from "../../components/shop/CartItem";
 import { CartScreenNavProp } from "../../navigation/ShopStack/types";
 import {
+  removeItem,
   selectCartItems,
   selectCartTotalAmount,
 } from "../../store/reducers/cart";
-import { useAppSelector } from "../../store/types";
+import { useAppDispatch, useAppSelector } from "../../store/types";
 
 const CartScreen: FC = () => {
+  const dispatch = useAppDispatch();
   const navigation = useNavigation<CartScreenNavProp>();
 
   const cartItems = useAppSelector(selectCartItems);
@@ -30,8 +32,12 @@ const CartScreen: FC = () => {
     cartItemsList = (
       <FlatList
         data={cartItems}
+        keyExtractor={(item) => item.productId}
         renderItem={({ item }) => (
-          <CartItem cartItem={item} onRemove={() => null} />
+          <CartItem
+            cartItem={item}
+            onRemove={() => dispatch(removeItem(item.productId))}
+          />
         )}
       />
     );
@@ -49,7 +55,7 @@ const CartScreen: FC = () => {
         <HeadingText>
           Total:{" "}
           <BodyText style={styles.summaryAmount}>
-            ${cartTotalAmount.toFixed(2)}
+            ${Math.abs(cartTotalAmount).toFixed(2)}
           </BodyText>
         </HeadingText>
         <Button
