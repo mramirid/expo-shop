@@ -1,4 +1,19 @@
-export default interface Product {
+export interface AddProductPayload {
+  ownerId: string;
+  title: string;
+  imageUrl: string;
+  description: string;
+  price: number;
+}
+
+export interface UpdateProductPayload {
+  productId: string;
+  title: string;
+  imageUrl: string;
+  description: string;
+}
+
+export default interface Product extends AddProductPayload {
   readonly id: string;
   readonly ownerId: string;
   title: string;

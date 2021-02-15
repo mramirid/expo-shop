@@ -33,6 +33,15 @@ const UserProductsScreen: FC = () => {
           />
         </HeaderButtons>
       ),
+      headerRight: () => (
+        <HeaderButtons HeaderButtonComponent={AppHeaderButton}>
+          <Item
+            title="Create Product"
+            iconName="create"
+            onPress={() => navigation.navigate("EditProductScreen")}
+          />
+        </HeaderButtons>
+      ),
     });
   }, [navigation]);
 
@@ -44,9 +53,17 @@ const UserProductsScreen: FC = () => {
         <ProductItem
           style={styles.productItems}
           product={item}
-          onCardTap={() => null}>
+          onCardTap={() => {
+            navigation.navigate("EditProductScreen", { product: item });
+          }}>
           <View style={styles.actionButtons}>
-            <Button color={Colors.Accent} title="EDIT" onPress={() => null} />
+            <Button
+              color={Colors.Accent}
+              title="EDIT"
+              onPress={() => {
+                navigation.navigate("EditProductScreen", { product: item });
+              }}
+            />
           </View>
           <View style={styles.actionButtons}>
             <Button

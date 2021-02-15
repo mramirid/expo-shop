@@ -1,14 +1,25 @@
 import { DrawerNavigationProp } from "@react-navigation/drawer";
-import { CompositeNavigationProp } from "@react-navigation/native";
+import { CompositeNavigationProp, RouteProp } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 
 import { ShopDrawerParamList } from "../ShopDrawer/types";
+import Product from "../../types/product";
 
 export type UserProductsStackParamList = {
   UserProductsScreen: undefined;
+  EditProductScreen: { product: Product } | undefined;
 };
 
 export type UserProductsScreenNavProp = CompositeNavigationProp<
   StackNavigationProp<UserProductsStackParamList, "UserProductsScreen">,
   DrawerNavigationProp<ShopDrawerParamList>
+>;
+
+export type EditProductScreenNavProp = CompositeNavigationProp<
+  StackNavigationProp<UserProductsStackParamList, "EditProductScreen">,
+  DrawerNavigationProp<ShopDrawerParamList>
+>;
+export type EditProductScreenRouteProp = RouteProp<
+  UserProductsStackParamList,
+  "EditProductScreen"
 >;

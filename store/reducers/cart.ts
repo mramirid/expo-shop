@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { RootState } from "../types";
 import { Cart } from "../../types/cart";
-import Product from "../../types/product";
+import Product, { UpdateProductPayload } from "../../types/product";
 
 type CartState = Cart;
 
@@ -46,6 +46,14 @@ const cartSlice = createSlice({
       state.items = [];
       state.totalAmount = 0;
     },
+    updateProduct(state, action: PayloadAction<UpdateProductPayload>) {
+      const itemIndex = state.items.findIndex(
+        (item) => item.productId === action.payload.productId,
+      );
+      if (itemIndex >= 0) {
+        state.items[itemIndex].title = action.payload.title;
+      }
+    },
     deleteProduct(state, action: PayloadAction<string>) {
       const itemIndex = state.items.findIndex(
         (item) => item.productId === action.payload,
@@ -68,6 +76,7 @@ export const {
   addToCart,
   removeItem,
   clearCart,
+  updateProduct,
   deleteProduct,
 } = cartSlice.actions;
 
