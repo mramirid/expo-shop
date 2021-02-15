@@ -1,5 +1,5 @@
 import React, { FC, useLayoutEffect } from "react";
-import { FlatList, StyleSheet } from "react-native";
+import { View, Button, FlatList, StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 
@@ -9,11 +9,12 @@ import { ProductsOverviewScreenNavProp } from "../../navigation/ShopStack/types"
 import ProductItem from "../../components/shop/ProductItem";
 import { addToCart } from "../../store/reducers/cart";
 import AppHeaderButton from "../../components/ui/AppHeaderButton";
+import Colors from "../../constants/colors";
 
 const ProductsOverviewScreen: FC = () => {
   const dispatch = useAppDispatch();
   const navigation = useNavigation<ProductsOverviewScreenNavProp>();
-  const publicProducts = useAppSelector(selectProducts);
+  const products = useAppSelector(selectProducts);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -42,16 +43,31 @@ const ProductsOverviewScreen: FC = () => {
   return (
     <FlatList
       contentContainerStyle={styles.screenBody}
-      data={publicProducts}
-      renderItem={(data) => (
+      data={products}
+      renderItem={({ item }) => (
         <ProductItem
           style={styles.productItems}
-          product={data.item}
-          onViewDetail={() => {
-            navigation.navigate("ProductDetailScreen", { product: data.item });
-          }}
-          onAddToCart={() => dispatch(addToCart(data.item))}
-        />
+          product={item}
+          onCardTap={() => {
+            navigation.navigate("ProductDetailScreen", { product: item });
+          }}>
+          <View style={styles.actionButtons}>
+            <Button
+              color={Colors.Accent}
+              title="VIEW DETAILS"
+              onPress={() => {
+                navigation.navigate("ProductDetailScreen", { product: item });
+              }}
+            />
+          </View>
+          <View style={styles.actionButtons}>
+            <Button
+              color={Colors.Accent}
+              title="ADD TO CART"
+              onPress={() => dispatch(addToCart(item))}
+            />
+          </View>
+        </ProductItem>
       )}
     />
   );
@@ -64,6 +80,9 @@ const styles = StyleSheet.create({
   },
   productItems: {
     marginBottom: 20,
+  },
+  actionButtons: {
+    width: "40%",
   },
 });
 

@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { RootState } from "../types";
 import Product from "../../types/product";
@@ -17,9 +17,20 @@ const initialState: ProductsState = {
 const productsSlice = createSlice({
   name: "products",
   initialState,
-  reducers: {},
+  reducers: {
+    deleteUserProducts(state, action: PayloadAction<string>) {
+      state.userProducts = state.userProducts.filter(
+        (userProduct) => userProduct.id !== action.payload,
+      );
+    },
+  },
 });
 
 export const selectProducts = (state: RootState) => state.products.products;
+export const selectUserProducts = (state: RootState) => {
+  return state.products.userProducts;
+};
+
+export const { deleteUserProducts } = productsSlice.actions;
 
 export default productsSlice.reducer;

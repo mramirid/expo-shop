@@ -1,17 +1,17 @@
 import React, { FC, useLayoutEffect } from "react";
-import { FlatList, StyleSheet } from "react-native";
+import { FlatList, StyleSheet, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 
 import { useAppSelector } from "../../store/types";
 import { selectOrders } from "../../store/reducers/orders";
-import { OrdersStackNavProp } from "../../navigation/OrdersStack/types";
+import { OrderScreenNavProp } from "../../navigation/OrdersStack/types";
 import AppHeaderButton from "../../components/ui/AppHeaderButton";
 import OrderItem from "../../components/shop/OrderItem";
+import BodyText from "../../components/ui/text/BodyText";
 
 const OrdersScreen: FC = () => {
-  const navigation = useNavigation<OrdersStackNavProp>();
-
+  const navigation = useNavigation<OrderScreenNavProp>();
   const orders = useAppSelector(selectOrders);
 
   useLayoutEffect(() => {
@@ -29,23 +29,39 @@ const OrdersScreen: FC = () => {
     });
   }, [navigation]);
 
-  return (
-    <FlatList
-      contentContainerStyle={styles.screen}
-      data={orders}
-      renderItem={({ item }) => (
-        <OrderItem style={styles.orderItems} order={item} />
-      )}
-    />
-  );
+  let orderItemsList: JSX.Element;
+  if (orders.length > 0) {
+    orderItemsList = (
+      <FlatList
+        contentContainerStyle={styles.screen}
+        data={orders}
+        renderItem={({ item }) => (
+          <OrderItem style={styles.orderItems} order={item} />
+        )}
+      />
+    );
+  } else {
+    orderItemsList = (
+      <View style={{ ...styles.screen, ...styles.emptyList }}>
+        <BodyText>No items available</BodyText>
+      </View>
+    );
+  }
+
+  return orderItemsList;
 };
 
 const styles = StyleSheet.create({
   screen: {
-    padding: 20,
+    paddingTop: 20,
+    paddingHorizontal: 20,
   },
   orderItems: {
     marginBottom: 20,
+  },
+  emptyList: {
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 

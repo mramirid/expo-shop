@@ -14,6 +14,7 @@ import Colors from "../../constants/colors";
 import Fonts from "../../constants/fonts";
 import ShopStack from "../ShopStack/ShopStack";
 import OrderStack from "../OrdersStack/OrdersStack";
+import UserProductsStack from "../UserProductsStack/UserProductsStack";
 
 const DrawerContent: FC<DrawerContentComponentProps<DrawerContentOptions>> = (
   props,
@@ -72,6 +73,16 @@ const ShopDrawer: FC = () => (
         drawerLabel: "Your Orders",
         drawerIcon: (drawerOptions) => (
           <Ionicons name="list" size={22} color={drawerOptions.color} />
+        ),
+      }}
+    />
+    <Drawer.Screen
+      name="UserProductsStack"
+      component={UserProductsStack}
+      options={{
+        drawerLabel: "Your Products",
+        drawerIcon: (drawerOptions) => (
+          <Ionicons name="create" size={22} color={drawerOptions.color} />
         ),
       }}
     />

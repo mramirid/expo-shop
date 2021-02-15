@@ -4,11 +4,11 @@ import { StackNavigationProp } from "@react-navigation/stack";
 
 import { ShopDrawerParamList } from "../ShopDrawer/types";
 
-export type OrdersStackParamList = {
-  OrderScreen: undefined;
+export type UserProductsStackParamList = {
+  UserProductsScreen: undefined;
 };
 
-export type OrderScreenNavProp = CompositeNavigationProp<
-  StackNavigationProp<OrdersStackParamList, "OrderScreen">,
+export type UserProductsScreenNavProp = CompositeNavigationProp<
+  StackNavigationProp<UserProductsStackParamList, "UserProductsScreen">,
   DrawerNavigationProp<ShopDrawerParamList>
 >;
