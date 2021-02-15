@@ -1,7 +1,7 @@
 import { useNavigation } from "@react-navigation/native";
 import React, { FC, useLayoutEffect } from "react";
 import { batch } from "react-redux";
-import { View, Button, FlatList, StyleSheet } from "react-native";
+import { View, Button, FlatList, StyleSheet, Alert } from "react-native";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 
 import { UserProductsScreenNavProp } from "../../navigation/UserProductsStack/types";
@@ -45,6 +45,24 @@ const UserProductsScreen: FC = () => {
     });
   }, [navigation]);
 
+  const startDeleteProduct = (productId: string) => {
+    batch(() => {
+      dispatch(deleteUserProducts(productId));
+      dispatch(deleteProduct(productId));
+    });
+  };
+
+  const showDeleteConfirmation = (productId: string) => {
+    Alert.alert("Are you sure?", "Do you really want to delete this item?", [
+      { text: "NO", style: "cancel" },
+      {
+        text: "YES",
+        style: "destructive",
+        onPress: () => startDeleteProduct(productId),
+      },
+    ]);
+  };
+
   return (
     <FlatList
       contentContainerStyle={styles.screenBody}
@@ -69,12 +87,7 @@ const UserProductsScreen: FC = () => {
             <Button
               color={Colors.Accent}
               title="DELETE"
-              onPress={() => {
-                batch(() => {
-                  dispatch(deleteUserProducts(item.id));
-                  dispatch(deleteProduct(item.id));
-                });
-              }}
+              onPress={() => showDeleteConfirmation(item.id)}
             />
           </View>
         </ProductItem>
