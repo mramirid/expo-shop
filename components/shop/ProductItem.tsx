@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   Platform,
   TouchableNativeFeedback,
+  ViewStyle,
 } from "react-native";
 
 import Colors from "../../constants/colors";
@@ -19,6 +20,7 @@ import HeadingText from "../ui/text/HeadingText";
 
 interface ProductItemProps {
   product: Product;
+  style?: ViewStyle;
   onViewDetail(): void;
   onAddToCart(): void;
 }
@@ -33,7 +35,7 @@ const ProductItem: FC<ProductItemProps> = (props) => {
     Touchable = TouchableOpacity;
   }
   return (
-    <AppCard style={styles.product}>
+    <AppCard style={{ ...styles.product, ...props.style }}>
       <Touchable onPress={props.onViewDetail} useForeground>
         <View>
           <Image
@@ -69,7 +71,6 @@ const ProductItem: FC<ProductItemProps> = (props) => {
 const styles = StyleSheet.create({
   product: {
     height: 300,
-    marginBottom: 20,
   },
   image: {
     width: "100%",

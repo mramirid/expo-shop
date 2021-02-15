@@ -45,6 +45,7 @@ const ProductsOverviewScreen: FC = () => {
       data={publicProducts}
       renderItem={(data) => (
         <ProductItem
+          style={styles.productItems}
           product={data.item}
           onViewDetail={() => {
             navigation.navigate("ProductDetailScreen", { product: data.item });
@@ -60,6 +61,9 @@ const styles = StyleSheet.create({
   screenBody: {
     paddingTop: 20,
     paddingHorizontal: 20,
+  },
+  productItems: {
+    marginBottom: 20,
   },
 });
 

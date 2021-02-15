@@ -10,6 +10,7 @@ import Colors from "../../constants/colors";
 import CartItem from "../../components/shop/CartItem";
 import { CartScreenNavProp } from "../../navigation/ShopStack/types";
 import {
+  clearCart,
   removeItem,
   selectCartItems,
   selectCartTotalAmount,
@@ -67,6 +68,7 @@ const CartScreen: FC = () => {
             dispatch(
               addOrder({ items: cartItems, totalAmount: cartTotalAmount }),
             );
+            dispatch(clearCart());
           }}
         />
       </AppCard>

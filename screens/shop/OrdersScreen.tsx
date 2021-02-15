@@ -1,13 +1,13 @@
 import React, { FC, useLayoutEffect } from "react";
-import { FlatList } from "react-native";
+import { FlatList, StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 
 import { useAppSelector } from "../../store/types";
 import { selectOrders } from "../../store/reducers/orders";
-import BodyText from "../../components/ui/text/BodyText";
 import { OrdersStackNavProp } from "../../navigation/OrdersStack/types";
 import AppHeaderButton from "../../components/ui/AppHeaderButton";
+import OrderItem from "../../components/shop/OrderItem";
 
 const OrdersScreen: FC = () => {
   const navigation = useNavigation<OrdersStackNavProp>();
@@ -31,10 +31,22 @@ const OrdersScreen: FC = () => {
 
   return (
     <FlatList
+      contentContainerStyle={styles.screen}
       data={orders}
-      renderItem={({ item }) => <BodyText>{item.totalAmount}</BodyText>}
+      renderItem={({ item }) => (
+        <OrderItem style={styles.orderItems} order={item} />
+      )}
     />
   );
 };
+
+const styles = StyleSheet.create({
+  screen: {
+    padding: 20,
+  },
+  orderItems: {
+    marginBottom: 20,
+  },
+});
 
 export default OrdersScreen;
