@@ -15,6 +15,7 @@ import {
   selectCartTotalAmount,
 } from "../../store/reducers/cart";
 import { useAppDispatch, useAppSelector } from "../../store/types";
+import { addOrder } from "../../store/reducers/orders";
 
 const CartScreen: FC = () => {
   const dispatch = useAppDispatch();
@@ -62,7 +63,11 @@ const CartScreen: FC = () => {
           disabled={cartItems.length === 0}
           title="ORDER NOW"
           color={Colors.Accent}
-          onPress={() => null}
+          onPress={() => {
+            dispatch(
+              addOrder({ items: cartItems, totalAmount: cartTotalAmount }),
+            );
+          }}
         />
       </AppCard>
       {cartItemsList}

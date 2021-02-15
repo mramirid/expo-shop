@@ -4,17 +4,17 @@ import { RootState } from "../types";
 import Product from "../../types/product";
 import PRODUCTS from "../../data/products";
 
-export interface ProductsState {
+interface ProductsState {
   products: Product[];
   userProducts: Product[];
 }
 
-export const initialState: ProductsState = {
+const initialState: ProductsState = {
   products: PRODUCTS,
   userProducts: PRODUCTS.filter((product) => product.ownerId === "u1"),
 };
 
-export const productsSlice = createSlice({
+const productsSlice = createSlice({
   name: "products",
   initialState,
   reducers: {},

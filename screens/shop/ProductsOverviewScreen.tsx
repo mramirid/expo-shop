@@ -27,6 +27,15 @@ const ProductsOverviewScreen: FC = () => {
           />
         </HeaderButtons>
       ),
+      headerLeft: () => (
+        <HeaderButtons HeaderButtonComponent={AppHeaderButton}>
+          <Item
+            title="Menu"
+            iconName="menu"
+            onPress={navigation.toggleDrawer}
+          />
+        </HeaderButtons>
+      ),
     });
   }, [navigation]);
 

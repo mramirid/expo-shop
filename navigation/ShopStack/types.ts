@@ -1,7 +1,9 @@
-import { RouteProp } from "@react-navigation/native";
+import { DrawerNavigationProp } from "@react-navigation/drawer";
+import { CompositeNavigationProp, RouteProp } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 
 import Product from "../../types/product";
+import { ShopDrawerParamList } from "../ShopDrawer/types";
 
 export type ShopStackParamList = {
   ProductsOverviewScreen: undefined;
@@ -9,9 +11,9 @@ export type ShopStackParamList = {
   CartScreen: undefined;
 };
 
-export type ProductsOverviewScreenNavProp = StackNavigationProp<
-  ShopStackParamList,
-  "ProductsOverviewScreen"
+export type ProductsOverviewScreenNavProp = CompositeNavigationProp<
+  StackNavigationProp<ShopStackParamList, "ProductsOverviewScreen">,
+  DrawerNavigationProp<ShopDrawerParamList>
 >;
 
 export type ProductDetailScreenRouteProp = RouteProp<

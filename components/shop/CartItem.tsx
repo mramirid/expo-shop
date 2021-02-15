@@ -3,7 +3,7 @@ import { View, StyleSheet } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Ionicons } from "@expo/vector-icons";
 
-import ICartItem from "../../types/cart-item";
+import { CartItem as ICartItem } from "../../types/cart";
 import HeadingText from "../ui/text/HeadingText";
 import BodyText from "../ui/text/BodyText";
 
