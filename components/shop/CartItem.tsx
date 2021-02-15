@@ -9,7 +9,7 @@ import BodyText from "../ui/text/BodyText";
 
 interface CartItemProps {
   cartItem: ICartItem;
-  onRemove(): void;
+  onRemove?: () => void;
 }
 
 const CartItem: FC<CartItemProps> = (props) => (
@@ -24,9 +24,11 @@ const CartItem: FC<CartItemProps> = (props) => (
       <HeadingText style={styles.headingText}>
         ${(props.cartItem.price * props.cartItem.qty).toFixed(2)}
       </HeadingText>
-      <TouchableOpacity style={styles.deleteButton} onPress={props.onRemove}>
-        <Ionicons name="trash" size={23} color="red" />
-      </TouchableOpacity>
+      {props.onRemove && (
+        <TouchableOpacity style={styles.deleteButton} onPress={props.onRemove}>
+          <Ionicons name="trash" size={23} color="red" />
+        </TouchableOpacity>
+      )}
     </View>
   </View>
 );
