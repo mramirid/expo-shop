@@ -1,5 +1,5 @@
 import React, { FC, useCallback, useLayoutEffect, useState } from "react";
-import { View, ScrollView, TextInput, StyleSheet } from "react-native";
+import { View, ScrollView, TextInput, StyleSheet, Alert } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import { batch } from "react-redux";
@@ -17,20 +17,20 @@ import {
   updateUserProduct,
 } from "../../store/reducers/products";
 import { updateProduct } from "../../store/reducers/cart";
-
-interface ProductInput {
-  title: string;
-  imageUrl: string;
-  description: string;
-  price: string;
-}
+import BodyText from "../../components/ui/text/BodyText";
 
 const EditProductScreen: FC = () => {
   const dispatch = useAppDispatch();
   const navigation = useNavigation<EditProductScreenNavProp>();
   const { params } = useRoute<EditProductScreenRouteProp>();
 
-  const [productInput, setProductInput] = useState<ProductInput>({
+  const [validationStatus, setValidationStatus] = useState({
+    isTitleValid: false,
+    isImageUrlValid: false,
+    isPriceValid: false,
+    isDescValid: false,
+  });
+  const [productInput, setProductInput] = useState({
     title: params?.product.title || "",
     imageUrl: params?.product.imageUrl || "",
     price: params?.product.price.toString() || "",
@@ -38,6 +38,18 @@ const EditProductScreen: FC = () => {
   });
 
   const addOrUpdateProduct = useCallback(() => {
+    if (
+      !validationStatus.isTitleValid &&
+      !validationStatus.isImageUrlValid &&
+      !validationStatus.isPriceValid &&
+      !validationStatus.isDescValid
+    ) {
+      Alert.alert("Validation Error", "Please check the errors in the form", [
+        { text: "OK" },
+      ]);
+      return;
+    }
+
     if (params) {
       const updateProductPayload: UpdateProductPayload = {
         productId: params.product.id,
@@ -61,7 +73,7 @@ const EditProductScreen: FC = () => {
       );
     }
     navigation.goBack();
-  }, [dispatch, navigation, params, productInput]);
+  }, [dispatch, navigation, params, productInput, validationStatus]);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -78,6 +90,20 @@ const EditProductScreen: FC = () => {
     });
   }, [addOrUpdateProduct, navigation, params]);
 
+  const changeTitle = (newTitle: string) => {
+    let isTitleValid = true;
+    if (newTitle.trim().length > 0) {
+      isTitleValid = true;
+    } else {
+      isTitleValid = false;
+    }
+    setValidationStatus((validationStatus) => ({
+      ...validationStatus,
+      isTitleValid,
+    }));
+    setProductInput({ ...productInput, title: newTitle });
+  };
+
   return (
     <ScrollView contentContainerStyle={styles.screen}>
       <View style={styles.formControl}>
@@ -85,20 +111,22 @@ const EditProductScreen: FC = () => {
         <TextInput
           style={styles.input}
           value={productInput.title}
-          autoCapitalize="sentences"
+          autoCapitalize="words"
           returnKeyType="next"
-          onEndEditing={() => null}
-          onSubmitEditing={() => null}
-          onChangeText={(text) => {
-            setProductInput({ ...productInput, title: text });
-          }}
+          onChangeText={changeTitle}
         />
+        {!validationStatus.isTitleValid && (
+          <BodyText style={styles.inputErrors}>
+            Please enter a valid title
+          </BodyText>
+        )}
       </View>
       <View style={styles.formControl}>
         <HeadingText style={styles.label}>Image URL</HeadingText>
         <TextInput
           style={styles.input}
           value={productInput.imageUrl}
+          returnKeyType="next"
           onChangeText={(text) => {
             setProductInput({ ...productInput, imageUrl: text });
           }}
@@ -111,6 +139,7 @@ const EditProductScreen: FC = () => {
           value={productInput.price}
           editable={!params}
           keyboardType="number-pad"
+          returnKeyType="next"
           onChangeText={(text) => {
             setProductInput({ ...productInput, price: text });
           }}
@@ -121,6 +150,7 @@ const EditProductScreen: FC = () => {
         <TextInput
           style={styles.input}
           value={productInput.description}
+          autoCapitalize="sentences"
           onChangeText={(text) => {
             setProductInput({ ...productInput, description: text });
           }}
@@ -147,6 +177,9 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     borderBottomColor: "#ccc",
     borderBottomWidth: 1,
+  },
+  inputErrors: {
+    color: "red",
   },
 });
 
