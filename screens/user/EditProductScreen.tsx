@@ -85,6 +85,10 @@ const EditProductScreen: FC = () => {
         <TextInput
           style={styles.input}
           value={productInput.title}
+          autoCapitalize="sentences"
+          returnKeyType="next"
+          onEndEditing={() => null}
+          onSubmitEditing={() => null}
           onChangeText={(text) => {
             setProductInput({ ...productInput, title: text });
           }}
@@ -103,9 +107,10 @@ const EditProductScreen: FC = () => {
       <View style={styles.formControl}>
         <HeadingText style={styles.label}>Price</HeadingText>
         <TextInput
-          editable={!params}
           style={styles.input}
           value={productInput.price}
+          editable={!params}
+          keyboardType="number-pad"
           onChangeText={(text) => {
             setProductInput({ ...productInput, price: text });
           }}
