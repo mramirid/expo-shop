@@ -7,7 +7,7 @@ import {
   Alert,
   RefreshControl,
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import { unwrapResult } from "@reduxjs/toolkit";
 
@@ -43,8 +43,9 @@ const ProductsOverviewScreen: FC = () => {
       .finally(() => setIsLoading(false));
   }, [dispatch]);
 
+  useFocusEffect(onfetchProducts);
+
   useLayoutEffect(() => {
-    onfetchProducts();
     navigation.setOptions({
       headerTitle: "All Products",
       headerRight: () => (
