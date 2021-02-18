@@ -1,8 +1,10 @@
-import React, { FC, useCallback, useLayoutEffect, useState } from "react";
-import { View, ScrollView, TextInput, StyleSheet, Alert } from "react-native";
+import React, { FC, useCallback, useLayoutEffect } from "react";
+import { View, ScrollView, TextInput, StyleSheet } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import { batch } from "react-redux";
+import { Controller, useForm } from "react-hook-form";
+import { ErrorMessage } from "@hookform/error-message";
 
 import AppHeaderButton from "../../components/ui/AppHeaderButton";
 import HeadingText from "../../components/ui/text/HeadingText";
@@ -19,61 +21,54 @@ import {
 import { updateProduct } from "../../store/reducers/cart";
 import BodyText from "../../components/ui/text/BodyText";
 
+interface InputData {
+  title: string;
+  imageUrl: string;
+  price: string;
+  description: string;
+}
+
 const EditProductScreen: FC = () => {
   const dispatch = useAppDispatch();
   const navigation = useNavigation<EditProductScreenNavProp>();
   const { params } = useRoute<EditProductScreenRouteProp>();
-
-  const [validationStatus, setValidationStatus] = useState({
-    isTitleValid: false,
-    isImageUrlValid: false,
-    isPriceValid: false,
-    isDescValid: false,
-  });
-  const [productInput, setProductInput] = useState({
-    title: params?.product.title || "",
-    imageUrl: params?.product.imageUrl || "",
-    price: params?.product.price.toString() || "",
-    description: params?.product.description || "",
+  const { handleSubmit, control, errors } = useForm<InputData>({
+    defaultValues: {
+      title: params?.product.title || "",
+      imageUrl: params?.product.imageUrl || "",
+      price: params?.product.price.toString() || "",
+      description: params?.product.description || "",
+    },
   });
 
-  const addOrUpdateProduct = useCallback(() => {
-    if (
-      !validationStatus.isTitleValid &&
-      !validationStatus.isImageUrlValid &&
-      !validationStatus.isPriceValid &&
-      !validationStatus.isDescValid
-    ) {
-      Alert.alert("Validation Error", "Please check the errors in the form", [
-        { text: "OK" },
-      ]);
-      return;
-    }
-
-    if (params) {
-      const updateProductPayload: UpdateProductPayload = {
-        productId: params.product.id,
-        title: productInput.title,
-        imageUrl: productInput.imageUrl,
-        description: productInput.description,
-      };
-      batch(() => {
-        dispatch(updateUserProduct(updateProductPayload));
-        dispatch(updateProduct(updateProductPayload));
-      });
-    } else {
-      dispatch(
-        addUserProduct({
-          ownerId: "u1",
-          title: productInput.title,
-          imageUrl: productInput.imageUrl,
-          price: +productInput.price,
-          description: productInput.description,
-        }),
-      );
-    }
-    navigation.goBack();
-  }, [dispatch, navigation, params, productInput, validationStatus]);
+  const onValidSubmission = useCallback(
+    (data: InputData) => {
+      if (params) {
+        const updateProductPayload: UpdateProductPayload = {
+          productId: params.product.id,
+          title: data.title,
+          imageUrl: data.imageUrl,
+          description: data.description,
+        };
+        batch(() => {
+          dispatch(updateUserProduct(updateProductPayload));
+          dispatch(updateProduct(updateProductPayload));
+        });
+      } else {
+        dispatch(
+          addUserProduct({
+            ownerId: "u1",
+            title: data.title,
+            imageUrl: data.imageUrl,
+            price: +data.price,
+            description: data.description,
+          }),
+        );
+      }
+      navigation.goBack();
+    },
+    [dispatch, navigation, params],
+  );
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -83,77 +78,109 @@ const EditProductScreen: FC = () => {
           <Item
             title="Save"
             iconName="checkmark-circle"
-            onPress={addOrUpdateProduct}
+            onPress={handleSubmit(onValidSubmission)}
           />
         </HeaderButtons>
       ),
     });
-  }, [addOrUpdateProduct, navigation, params]);
-
-  const changeTitle = (newTitle: string) => {
-    let isTitleValid = true;
-    if (newTitle.trim().length > 0) {
-      isTitleValid = true;
-    } else {
-      isTitleValid = false;
-    }
-    setValidationStatus((validationStatus) => ({
-      ...validationStatus,
-      isTitleValid,
-    }));
-    setProductInput({ ...productInput, title: newTitle });
-  };
+  }, [handleSubmit, navigation, onValidSubmission, params]);
 
   return (
     <ScrollView contentContainerStyle={styles.screen}>
       <View style={styles.formControl}>
         <HeadingText style={styles.label}>Title</HeadingText>
-        <TextInput
-          style={styles.input}
-          value={productInput.title}
-          autoCapitalize="words"
-          returnKeyType="next"
-          onChangeText={changeTitle}
+        <Controller
+          name="title"
+          control={control}
+          rules={{ required: "Title is required" }}
+          render={(renderProps) => (
+            <TextInput
+              {...renderProps}
+              style={styles.input}
+              autoCapitalize="words"
+              returnKeyType="next"
+              onChangeText={(text) => renderProps.onChange(text)}
+            />
+          )}
         />
-        {!validationStatus.isTitleValid && (
-          <BodyText style={styles.inputErrors}>
-            Please enter a valid title
-          </BodyText>
-        )}
+        <ErrorMessage
+          name="title"
+          errors={errors}
+          render={({ message }) => (
+            <BodyText style={styles.inputErrors}>{message}</BodyText>
+          )}
+        />
       </View>
       <View style={styles.formControl}>
         <HeadingText style={styles.label}>Image URL</HeadingText>
-        <TextInput
-          style={styles.input}
-          value={productInput.imageUrl}
-          returnKeyType="next"
-          onChangeText={(text) => {
-            setProductInput({ ...productInput, imageUrl: text });
-          }}
+        <Controller
+          name="imageUrl"
+          control={control}
+          rules={{ required: "Image URL is required" }}
+          render={(renderProps) => (
+            <TextInput
+              {...renderProps}
+              style={styles.input}
+              returnKeyType="next"
+              onChangeText={(text) => renderProps.onChange(text)}
+            />
+          )}
+        />
+        <ErrorMessage
+          name="imageUrl"
+          errors={errors}
+          render={({ message }) => (
+            <BodyText style={styles.inputErrors}>{message}</BodyText>
+          )}
         />
       </View>
       <View style={styles.formControl}>
         <HeadingText style={styles.label}>Price</HeadingText>
-        <TextInput
-          style={styles.input}
-          value={productInput.price}
-          editable={!params}
-          keyboardType="number-pad"
-          returnKeyType="next"
-          onChangeText={(text) => {
-            setProductInput({ ...productInput, price: text });
-          }}
+        <Controller
+          name="price"
+          control={control}
+          rules={{ required: "Price is required" }}
+          render={(renderProps) => (
+            <TextInput
+              {...renderProps}
+              style={styles.input}
+              editable={!params}
+              keyboardType="number-pad"
+              returnKeyType="next"
+              onChangeText={(text) => renderProps.onChange(text)}
+            />
+          )}
+        />
+        <ErrorMessage
+          name="price"
+          errors={errors}
+          render={({ message }) => (
+            <BodyText style={styles.inputErrors}>{message}</BodyText>
+          )}
         />
       </View>
       <View style={styles.formControl}>
         <HeadingText style={styles.label}>Description</HeadingText>
-        <TextInput
-          style={styles.input}
-          value={productInput.description}
-          autoCapitalize="sentences"
-          onChangeText={(text) => {
-            setProductInput({ ...productInput, description: text });
-          }}
+        <Controller
+          name="description"
+          control={control}
+          rules={{ required: "Product description is required" }}
+          render={(renderProps) => (
+            <TextInput
+              {...renderProps}
+              style={styles.input}
+              autoCapitalize="sentences"
+              returnKeyType="next"
+              onChangeText={(text) => renderProps.onChange(text)}
+            />
+          )}
+        />
+        <ErrorMessage
+          name="description"
+          errors={errors}
+          render={({ message }) => (
+            <BodyText style={styles.inputErrors}>{message}</BodyText>
+          )}
         />
       </View>
     </ScrollView>
