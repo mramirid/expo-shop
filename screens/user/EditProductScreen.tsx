@@ -169,6 +169,7 @@ const EditProductScreen: FC = () => {
             <TextInput
               {...renderProps}
               style={styles.input}
+              multiline
               autoCapitalize="sentences"
               returnKeyType="next"
               onChangeText={(text) => renderProps.onChange(text)}
