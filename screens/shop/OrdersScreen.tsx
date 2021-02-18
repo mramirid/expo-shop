@@ -33,7 +33,7 @@ const OrdersScreen: FC = () => {
   if (orders.length > 0) {
     orderItemsList = (
       <FlatList
-        contentContainerStyle={styles.screen}
+        contentContainerStyle={styles.screenBody}
         data={orders}
         renderItem={({ item }) => (
           <OrderItem style={styles.orderItems} order={item} />
@@ -42,7 +42,7 @@ const OrdersScreen: FC = () => {
     );
   } else {
     orderItemsList = (
-      <View style={{ ...styles.screen, ...styles.emptyList }}>
+      <View style={{ ...styles.screenBody, ...styles.emptyList }}>
         <BodyText>No items available</BodyText>
       </View>
     );
@@ -52,7 +52,7 @@ const OrdersScreen: FC = () => {
 };
 
 const styles = StyleSheet.create({
-  screen: {
+  screenBody: {
     paddingTop: 20,
     paddingHorizontal: 20,
   },

@@ -52,7 +52,7 @@ const CartScreen: FC = () => {
   }
 
   return (
-    <View style={styles.screen}>
+    <View style={styles.screenBody}>
       <AppCard style={styles.summary}>
         <HeadingText>
           Total:{" "}
@@ -78,7 +78,7 @@ const CartScreen: FC = () => {
 };
 
 const styles = StyleSheet.create({
-  screen: {
+  screenBody: {
     flex: 1,
     paddingTop: 20,
     paddingHorizontal: 20,

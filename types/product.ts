@@ -21,3 +21,7 @@ export default interface Product extends AddProductPayload {
   description: string;
   readonly price: number;
 }
+
+export interface FireGETProducts {
+  [productId: string]: AddProductPayload;
+}

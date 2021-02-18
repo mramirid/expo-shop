@@ -2,8 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { RootState } from "../types";
 import Product, { UpdateProductPayload } from "../../types/product";
-import PRODUCTS from "../../data/products";
-import { postAddProduct } from "../thunks/products";
+import { fetchProducts, postAddProduct } from "../thunks/products";
 
 interface ProductsState {
   products: Product[];
@@ -11,8 +10,8 @@ interface ProductsState {
 }
 
 const initialState: ProductsState = {
-  products: PRODUCTS,
-  userProducts: PRODUCTS.filter((product) => product.ownerId === "u1"),
+  products: [],
+  userProducts: [],
 };
 
 const productsSlice = createSlice({
@@ -50,10 +49,17 @@ const productsSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(postAddProduct.fulfilled, (state, action) => {
-      state.products.unshift(action.payload);
-      state.userProducts.unshift(action.payload);
-    });
+    builder
+      .addCase(fetchProducts.fulfilled, (state, action) => {
+        state.products = action.payload;
+        state.userProducts = action.payload.filter(
+          (product) => product.ownerId === "u1",
+        );
+      })
+      .addCase(postAddProduct.fulfilled, (state, action) => {
+        state.products.push(action.payload);
+        state.userProducts.push(action.payload);
+      });
   },
 });
 

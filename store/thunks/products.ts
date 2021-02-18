@@ -1,8 +1,43 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 import { FirePOSTResBody } from "../../types/firebase";
-import Product, { AddProductPayload } from "../../types/product";
+import Product, {
+  AddProductPayload,
+  FireGETProducts,
+} from "../../types/product";
 import { AppThunkAPIConfig } from "../types";
+
+export const fetchProducts = createAsyncThunk<
+  Product[],
+  void,
+  AppThunkAPIConfig
+>("products/fetchProducts", async (payload, thunkAPI) => {
+  try {
+    const res = await fetch(`${process.env.DB_URL}/products.json`);
+
+    if (!res.ok) {
+      return thunkAPI.rejectWithValue({
+        statusCode: res.status,
+        message: "Failed to fetch products",
+      });
+    }
+
+    const resData: FireGETProducts = await res.json();
+    const products: Product[] = [];
+    for (const productId in resData) {
+      products.push({
+        id: productId,
+        ...resData[productId],
+      });
+    }
+    return products;
+  } catch (err) {
+    return thunkAPI.rejectWithValue({
+      statusCode: 400,
+      message: "Cannot reach the server, try again later",
+    });
+  }
+});
 
 export const postAddProduct = createAsyncThunk<
   Product,
@@ -19,7 +54,7 @@ export const postAddProduct = createAsyncThunk<
     if (!res.ok) {
       return thunkAPI.rejectWithValue({
         statusCode: res.status,
-        message: "Failed to add product, try again later",
+        message: "Failed to add product",
       });
     }
 
@@ -31,7 +66,7 @@ export const postAddProduct = createAsyncThunk<
   } catch (err) {
     return thunkAPI.rejectWithValue({
       statusCode: 400,
-      message: "Cannot reach the server",
+      message: "Cannot reach the server, try again later",
     });
   }
 });

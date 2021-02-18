@@ -90,7 +90,7 @@ const EditProductScreen: FC = () => {
   }, [handleSubmit, navigation, onValidSubmission, params]);
 
   return (
-    <ScrollView contentContainerStyle={styles.screen}>
+    <ScrollView contentContainerStyle={styles.screenBody}>
       <View style={styles.formControl}>
         <HeadingText style={styles.label}>Title</HeadingText>
         <Controller
@@ -193,7 +193,7 @@ const EditProductScreen: FC = () => {
 };
 
 const styles = StyleSheet.create({
-  screen: {
+  screenBody: {
     paddingTop: 20,
     paddingHorizontal: 20,
   },
