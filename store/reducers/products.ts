@@ -1,13 +1,9 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import "react-native-get-random-values";
-import { nanoid } from "nanoid";
 
 import { RootState } from "../types";
-import Product, {
-  AddProductPayload,
-  UpdateProductPayload,
-} from "../../types/product";
+import Product, { UpdateProductPayload } from "../../types/product";
 import PRODUCTS from "../../data/products";
+import { postAddProduct } from "../thunks/products";
 
 interface ProductsState {
   products: Product[];
@@ -23,14 +19,6 @@ const productsSlice = createSlice({
   name: "products",
   initialState,
   reducers: {
-    addUserProduct(state, action: PayloadAction<AddProductPayload>) {
-      const createdProduct: Product = {
-        id: nanoid(),
-        ...action.payload,
-      };
-      state.products.unshift(createdProduct);
-      state.userProducts.unshift(createdProduct);
-    },
     updateUserProduct(state, { payload }: PayloadAction<UpdateProductPayload>) {
       let itemIndex = state.products.findIndex(
         (product) => product.id === payload.productId,
@@ -61,6 +49,12 @@ const productsSlice = createSlice({
       );
     },
   },
+  extraReducers: (builder) => {
+    builder.addCase(postAddProduct.fulfilled, (state, action) => {
+      state.products.unshift(action.payload);
+      state.userProducts.unshift(action.payload);
+    });
+  },
 });
 
 export const selectProducts = (state: RootState) => state.products.products;
@@ -68,10 +62,6 @@ export const selectUserProducts = (state: RootState) => {
   return state.products.userProducts;
 };
 
-export const {
-  deleteUserProducts,
-  addUserProduct,
-  updateUserProduct,
-} = productsSlice.actions;
+export const { deleteUserProducts, updateUserProduct } = productsSlice.actions;
 
 export default productsSlice.reducer;

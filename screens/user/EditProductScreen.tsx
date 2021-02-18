@@ -1,10 +1,11 @@
 import React, { FC, useCallback, useLayoutEffect } from "react";
-import { View, ScrollView, TextInput, StyleSheet } from "react-native";
+import { View, ScrollView, TextInput, StyleSheet, Alert } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import { batch } from "react-redux";
 import { Controller, useForm } from "react-hook-form";
 import { ErrorMessage } from "@hookform/error-message";
+import { unwrapResult } from "@reduxjs/toolkit";
 
 import AppHeaderButton from "../../components/ui/AppHeaderButton";
 import HeadingText from "../../components/ui/text/HeadingText";
@@ -14,12 +15,10 @@ import {
 } from "../../navigation/UserProductsStack/types";
 import { UpdateProductPayload } from "../../types/product";
 import { useAppDispatch } from "../../store/types";
-import {
-  addUserProduct,
-  updateUserProduct,
-} from "../../store/reducers/products";
+import { updateUserProduct } from "../../store/reducers/products";
 import { updateProduct } from "../../store/reducers/cart";
 import BodyText from "../../components/ui/text/BodyText";
+import { postAddProduct } from "../../store/thunks/products";
 
 interface InputData {
   title: string;
@@ -42,7 +41,7 @@ const EditProductScreen: FC = () => {
   });
 
   const onValidSubmission = useCallback(
-    (data: InputData) => {
+    async (data: InputData) => {
       if (params) {
         const updateProductPayload: UpdateProductPayload = {
           productId: params.product.id,
@@ -55,17 +54,22 @@ const EditProductScreen: FC = () => {
           dispatch(updateProduct(updateProductPayload));
         });
       } else {
-        dispatch(
-          addUserProduct({
-            ownerId: "u1",
-            title: data.title,
-            imageUrl: data.imageUrl,
-            price: +data.price,
-            description: data.description,
-          }),
-        );
+        try {
+          const thunkResult = await dispatch(
+            postAddProduct({
+              ownerId: "u1",
+              title: data.title,
+              imageUrl: data.imageUrl,
+              price: +data.price,
+              description: data.description,
+            }),
+          );
+          unwrapResult(thunkResult);
+          navigation.goBack();
+        } catch (error) {
+          Alert.alert("An error occurred", error.message, [{ text: "OK" }]);
+        }
       }
-      navigation.goBack();
     },
     [dispatch, navigation, params],
   );
