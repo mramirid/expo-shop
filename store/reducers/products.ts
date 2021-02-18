@@ -56,6 +56,9 @@ const productsSlice = createSlice({
       state.userProducts = state.userProducts.filter(
         (userProduct) => userProduct.id !== action.payload,
       );
+      state.products = state.products.filter(
+        (product) => product.id !== action.payload,
+      );
     },
   },
 });
