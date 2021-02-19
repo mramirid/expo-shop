@@ -111,14 +111,14 @@ const EditProductScreen: FC = () => {
 
   if (isLoading) {
     return (
-      <View style={styles.screenBody1}>
+      <View style={styles.screen1}>
         <ActivityIndicator size="large" color={Colors.Primary} />
       </View>
     );
   }
 
   return (
-    <ScrollView contentContainerStyle={styles.screenBody2}>
+    <ScrollView contentContainerStyle={styles.screen2}>
       <View style={styles.formControl}>
         <HeadingText style={styles.label}>Title</HeadingText>
         <Controller
@@ -171,7 +171,10 @@ const EditProductScreen: FC = () => {
         <Controller
           name="price"
           control={control}
-          rules={{ required: "Price is required" }}
+          rules={{
+            required: "Price is required",
+            validate: (val) => !isNaN(+val) || "Enter a valid number",
+          }}
           render={(renderProps) => (
             <TextInput
               {...renderProps}
@@ -221,12 +224,12 @@ const EditProductScreen: FC = () => {
 };
 
 const styles = StyleSheet.create({
-  screenBody1: {
+  screen1: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
   },
-  screenBody2: {
+  screen2: {
     paddingTop: 20,
     paddingHorizontal: 20,
   },

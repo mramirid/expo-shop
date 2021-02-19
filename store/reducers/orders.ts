@@ -1,10 +1,8 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import "react-native-get-random-values";
-import { nanoid } from "nanoid";
+import { createSlice } from "@reduxjs/toolkit";
 
 import { RootState } from "../types";
-import { Cart } from "../../types/cart";
 import Order from "../../types/order";
+import { addOrder, fetchOrders } from "../thunks/orders";
 
 interface OrdersState {
   items: Order[];
@@ -17,19 +15,18 @@ const initialState: OrdersState = {
 const ordersSlice = createSlice({
   name: "orders",
   initialState,
-  reducers: {
-    addOrder(state, action: PayloadAction<Cart>) {
-      state.items.unshift({
-        id: nanoid(),
-        ...action.payload,
-        date: new Date().getTime(),
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchOrders.fulfilled, (state, action) => {
+        state.items = action.payload;
+      })
+      .addCase(addOrder.fulfilled, (state, action) => {
+        state.items.push(action.payload);
       });
-    },
   },
 });
 
 export const selectOrders = (state: RootState) => state.orders.items;
-
-export const { addOrder } = ordersSlice.actions;
 
 export default ordersSlice.reducer;

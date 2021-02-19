@@ -6,8 +6,9 @@ import {
   StyleSheet,
   Alert,
   RefreshControl,
+  ScrollView,
 } from "react-native";
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import { unwrapResult } from "@reduxjs/toolkit";
 
@@ -21,7 +22,6 @@ import Colors from "../../constants/colors";
 import { fetchProducts } from "../../store/thunks/products";
 import { HttpError } from "../../types/errors";
 import BodyText from "../../components/ui/text/BodyText";
-import { ScrollView } from "react-native-gesture-handler";
 
 const ProductsOverviewScreen: FC = () => {
   const dispatch = useAppDispatch();
@@ -43,9 +43,8 @@ const ProductsOverviewScreen: FC = () => {
       .finally(() => setIsLoading(false));
   }, [dispatch]);
 
-  useFocusEffect(onfetchProducts);
-
   useLayoutEffect(() => {
+    onfetchProducts();
     navigation.setOptions({
       headerTitle: "All Products",
       headerRight: () => (
@@ -72,7 +71,7 @@ const ProductsOverviewScreen: FC = () => {
   if (!isLoading && error) {
     return (
       <ScrollView
-        contentContainerStyle={styles.screenBody1}
+        contentContainerStyle={styles.screen1}
         refreshControl={
           <RefreshControl refreshing={isLoading} onRefresh={onfetchProducts} />
         }>
@@ -82,22 +81,21 @@ const ProductsOverviewScreen: FC = () => {
   } else if (!isLoading && products.length === 0) {
     return (
       <ScrollView
-        contentContainerStyle={styles.screenBody1}
+        contentContainerStyle={styles.screen1}
         refreshControl={
           <RefreshControl refreshing={isLoading} onRefresh={onfetchProducts} />
         }>
-        <BodyText>No products found. Maybe start adding some!</BodyText>
+        <BodyText>No products available</BodyText>
       </ScrollView>
     );
   }
 
   return (
     <FlatList
-      contentContainerStyle={styles.screenBody2}
+      contentContainerStyle={styles.screen2}
+      refreshing={isLoading}
+      onRefresh={onfetchProducts}
       data={products}
-      refreshControl={
-        <RefreshControl refreshing={isLoading} onRefresh={onfetchProducts} />
-      }
       renderItem={({ item }) => (
         <ProductItem
           style={styles.productItems}
@@ -128,12 +126,12 @@ const ProductsOverviewScreen: FC = () => {
 };
 
 const styles = StyleSheet.create({
-  screenBody1: {
+  screen1: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
   },
-  screenBody2: {
+  screen2: {
     paddingTop: 20,
     paddingHorizontal: 20,
   },

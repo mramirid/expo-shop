@@ -1,9 +1,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { RootState } from "../types";
-import { Cart } from "../../types/cart";
+import Cart from "../../types/cart";
 import Product from "../../types/product";
 import { deleteProduct, updateProduct } from "../thunks/products";
+import { addOrder } from "../thunks/orders";
 
 type CartState = Cart;
 
@@ -43,10 +44,6 @@ const cartSlice = createSlice({
         state.items.splice(itemIndex, 1);
       }
     },
-    clearCart(state) {
-      state.items = [];
-      state.totalAmount = 0;
-    },
   },
   extraReducers: (builder) => {
     builder
@@ -67,6 +64,10 @@ const cartSlice = createSlice({
             state.items[itemIndex].price * state.items[itemIndex].qty;
           state.items.splice(itemIndex, 1);
         }
+      })
+      .addCase(addOrder.fulfilled, (state) => {
+        state.items = [];
+        state.totalAmount = 0;
       });
   },
 });
@@ -76,6 +77,6 @@ export const selectCartTotalAmount = (state: RootState) => {
   return state.cart.totalAmount;
 };
 
-export const { addToCart, removeItem, clearCart } = cartSlice.actions;
+export const { addToCart, removeItem } = cartSlice.actions;
 
 export default cartSlice.reducer;

@@ -1,11 +1,12 @@
-import React, { FC, useLayoutEffect, useState } from "react";
+import React, { FC, useCallback, useLayoutEffect, useState } from "react";
 import {
   View,
   Button,
   FlatList,
   StyleSheet,
   Alert,
-  ActivityIndicator,
+  ScrollView,
+  RefreshControl,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
@@ -17,7 +18,9 @@ import { useAppDispatch, useAppSelector } from "../../store/types";
 import ProductItem from "../../components/shop/ProductItem";
 import AppHeaderButton from "../../components/ui/AppHeaderButton";
 import Colors from "../../constants/colors";
-import { deleteProduct } from "../../store/thunks/products";
+import { deleteProduct, fetchProducts } from "../../store/thunks/products";
+import { HttpError } from "../../types/errors";
+import BodyText from "../../components/ui/text/BodyText";
 
 const UserProductsScreen: FC = () => {
   const dispatch = useAppDispatch();
@@ -25,8 +28,22 @@ const UserProductsScreen: FC = () => {
 
   const userProducts = useAppSelector(selectUserProducts);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<HttpError | null>(null);
+
+  const onfetchProducts = useCallback(() => {
+    setIsLoading(true);
+    dispatch(fetchProducts())
+      .then(unwrapResult)
+      .then(() => setError(null))
+      .catch((error: HttpError) => {
+        setError(error);
+        Alert.alert("An error occurred", error.message, [{ text: "OK" }]);
+      })
+      .finally(() => setIsLoading(false));
+  }, [dispatch]);
 
   useLayoutEffect(() => {
+    onfetchProducts();
     navigation.setOptions({
       headerTitle: "Your Products",
       headerLeft: () => (
@@ -48,7 +65,7 @@ const UserProductsScreen: FC = () => {
         </HeaderButtons>
       ),
     });
-  }, [navigation]);
+  }, [navigation, onfetchProducts]);
 
   const confirmDeleteProduct = (productId: string) => {
     Alert.alert("Are you sure?", "Do you really want to delete this item?", [
@@ -70,17 +87,33 @@ const UserProductsScreen: FC = () => {
     ]);
   };
 
-  if (isLoading) {
+  if (!isLoading && error) {
     return (
-      <View style={styles.screenBody1}>
-        <ActivityIndicator size="large" color={Colors.Primary} />
-      </View>
+      <ScrollView
+        contentContainerStyle={styles.screen1}
+        refreshControl={
+          <RefreshControl refreshing={isLoading} onRefresh={onfetchProducts} />
+        }>
+        <BodyText>{error.message}</BodyText>
+      </ScrollView>
+    );
+  } else if (!isLoading && userProducts.length === 0) {
+    return (
+      <ScrollView
+        contentContainerStyle={styles.screen1}
+        refreshControl={
+          <RefreshControl refreshing={isLoading} onRefresh={onfetchProducts} />
+        }>
+        <BodyText>No products found. Maybe start adding some!</BodyText>
+      </ScrollView>
     );
   }
 
   return (
     <FlatList
-      contentContainerStyle={styles.screenBody2}
+      contentContainerStyle={styles.screen2}
+      refreshing={isLoading}
+      onRefresh={onfetchProducts}
       data={userProducts}
       renderItem={({ item }) => (
         <ProductItem
@@ -112,12 +145,12 @@ const UserProductsScreen: FC = () => {
 };
 
 const styles = StyleSheet.create({
-  screenBody1: {
+  screen1: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
   },
-  screenBody2: {
+  screen2: {
     paddingTop: 20,
     paddingHorizontal: 20,
   },

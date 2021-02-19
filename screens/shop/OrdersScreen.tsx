@@ -1,20 +1,46 @@
-import React, { FC, useLayoutEffect } from "react";
-import { FlatList, StyleSheet, View } from "react-native";
+import React, { FC, useCallback, useLayoutEffect, useState } from "react";
+import {
+  Alert,
+  FlatList,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+} from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
+import { unwrapResult } from "@reduxjs/toolkit";
 
-import { useAppSelector } from "../../store/types";
+import { useAppDispatch, useAppSelector } from "../../store/types";
 import { selectOrders } from "../../store/reducers/orders";
 import { OrderScreenNavProp } from "../../navigation/OrdersStack/types";
 import AppHeaderButton from "../../components/ui/AppHeaderButton";
 import OrderItem from "../../components/shop/OrderItem";
 import BodyText from "../../components/ui/text/BodyText";
+import { fetchOrders } from "../../store/thunks/orders";
+import { HttpError } from "../../types/errors";
 
 const OrdersScreen: FC = () => {
+  const dispatch = useAppDispatch();
   const navigation = useNavigation<OrderScreenNavProp>();
+
   const orders = useAppSelector(selectOrders);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<HttpError | null>(null);
+
+  const onFetchOrders = useCallback(() => {
+    setIsLoading(true);
+    dispatch(fetchOrders())
+      .then(unwrapResult)
+      .then(() => setError(null))
+      .catch((error: HttpError) => {
+        setError(error);
+        Alert.alert("An error occurred", error.message, [{ text: "OK" }]);
+      })
+      .finally(() => setIsLoading(false));
+  }, [dispatch]);
 
   useLayoutEffect(() => {
+    onFetchOrders();
     navigation.setOptions({
       headerTitle: "Your Orders",
       headerLeft: () => (
@@ -27,41 +53,56 @@ const OrdersScreen: FC = () => {
         </HeaderButtons>
       ),
     });
-  }, [navigation]);
+  }, [navigation, onFetchOrders]);
 
-  let orderItemsList: JSX.Element;
-  if (orders.length > 0) {
-    orderItemsList = (
-      <FlatList
-        contentContainerStyle={styles.screenBody}
-        data={orders}
-        renderItem={({ item }) => (
-          <OrderItem style={styles.orderItems} order={item} />
-        )}
-      />
+  if (!isLoading && error) {
+    return (
+      <ScrollView
+        contentContainerStyle={styles.screen1}
+        refreshControl={
+          <RefreshControl refreshing={isLoading} onRefresh={onFetchOrders} />
+        }>
+        <BodyText>{error.message}</BodyText>
+      </ScrollView>
     );
-  } else {
-    orderItemsList = (
-      <View style={{ ...styles.screenBody, ...styles.emptyList }}>
-        <BodyText>No items available</BodyText>
-      </View>
+  } else if (!isLoading && orders.length === 0) {
+    return (
+      <ScrollView
+        contentContainerStyle={styles.screen1}
+        refreshControl={
+          <RefreshControl refreshing={isLoading} onRefresh={onFetchOrders} />
+        }>
+        <BodyText>No orders found. Maybe start adding some!</BodyText>
+      </ScrollView>
     );
   }
 
-  return orderItemsList;
+  return (
+    <FlatList
+      contentContainerStyle={styles.screen2}
+      data={orders}
+      refreshControl={
+        <RefreshControl refreshing={isLoading} onRefresh={onFetchOrders} />
+      }
+      renderItem={({ item }) => (
+        <OrderItem style={styles.orderItems} order={item} />
+      )}
+    />
+  );
 };
 
 const styles = StyleSheet.create({
-  screenBody: {
+  screen1: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  screen2: {
     paddingTop: 20,
     paddingHorizontal: 20,
   },
   orderItems: {
     marginBottom: 20,
-  },
-  emptyList: {
-    justifyContent: "center",
-    alignItems: "center",
   },
 });
 
