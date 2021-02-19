@@ -1,25 +1,30 @@
+import React, { FC, useLayoutEffect, useState } from "react";
+import {
+  View,
+  Button,
+  FlatList,
+  StyleSheet,
+  Alert,
+  ActivityIndicator,
+} from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import React, { FC, useLayoutEffect } from "react";
-import { batch } from "react-redux";
-import { View, Button, FlatList, StyleSheet, Alert } from "react-native";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
+import { unwrapResult } from "@reduxjs/toolkit";
 
 import { UserProductsScreenNavProp } from "../../navigation/UserProductsStack/types";
-import {
-  deleteUserProducts,
-  selectUserProducts,
-} from "../../store/reducers/products";
+import { selectUserProducts } from "../../store/reducers/products";
 import { useAppDispatch, useAppSelector } from "../../store/types";
 import ProductItem from "../../components/shop/ProductItem";
 import AppHeaderButton from "../../components/ui/AppHeaderButton";
 import Colors from "../../constants/colors";
-import { deleteProduct } from "../../store/reducers/cart";
+import { deleteProduct } from "../../store/thunks/products";
 
 const UserProductsScreen: FC = () => {
   const dispatch = useAppDispatch();
   const navigation = useNavigation<UserProductsScreenNavProp>();
 
   const userProducts = useAppSelector(selectUserProducts);
+  const [isLoading, setIsLoading] = useState(false);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -45,27 +50,37 @@ const UserProductsScreen: FC = () => {
     });
   }, [navigation]);
 
-  const startDeleteProduct = (productId: string) => {
-    batch(() => {
-      dispatch(deleteUserProducts(productId));
-      dispatch(deleteProduct(productId));
-    });
-  };
-
-  const showDeleteConfirmation = (productId: string) => {
+  const confirmDeleteProduct = (productId: string) => {
     Alert.alert("Are you sure?", "Do you really want to delete this item?", [
       { text: "NO", style: "cancel" },
       {
         text: "YES",
         style: "destructive",
-        onPress: () => startDeleteProduct(productId),
+        onPress: async () => {
+          try {
+            setIsLoading(true);
+            unwrapResult(await dispatch(deleteProduct(productId)));
+          } catch (error) {
+            Alert.alert("An error occurred", error.message, [{ text: "OK" }]);
+          } finally {
+            setIsLoading(false);
+          }
+        },
       },
     ]);
   };
 
+  if (isLoading) {
+    return (
+      <View style={styles.screenBody1}>
+        <ActivityIndicator size="large" color={Colors.Primary} />
+      </View>
+    );
+  }
+
   return (
     <FlatList
-      contentContainerStyle={styles.screenBody}
+      contentContainerStyle={styles.screenBody2}
       data={userProducts}
       renderItem={({ item }) => (
         <ProductItem
@@ -87,7 +102,7 @@ const UserProductsScreen: FC = () => {
             <Button
               color={Colors.Accent}
               title="DELETE"
-              onPress={() => showDeleteConfirmation(item.id)}
+              onPress={() => confirmDeleteProduct(item.id)}
             />
           </View>
         </ProductItem>
@@ -97,7 +112,12 @@ const UserProductsScreen: FC = () => {
 };
 
 const styles = StyleSheet.create({
-  screenBody: {
+  screenBody1: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  screenBody2: {
     paddingTop: 20,
     paddingHorizontal: 20,
   },

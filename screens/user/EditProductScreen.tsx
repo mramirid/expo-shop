@@ -1,8 +1,20 @@
-import React, { FC, useCallback, useLayoutEffect } from "react";
-import { View, ScrollView, TextInput, StyleSheet, Alert } from "react-native";
+import React, {
+  FC,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useState,
+} from "react";
+import {
+  View,
+  ScrollView,
+  TextInput,
+  StyleSheet,
+  Alert,
+  ActivityIndicator,
+} from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
-import { batch } from "react-redux";
 import { Controller, useForm } from "react-hook-form";
 import { ErrorMessage } from "@hookform/error-message";
 import { unwrapResult } from "@reduxjs/toolkit";
@@ -15,10 +27,9 @@ import {
 } from "../../navigation/UserProductsStack/types";
 import { UpdateProductPayload } from "../../types/product";
 import { useAppDispatch } from "../../store/types";
-import { updateUserProduct } from "../../store/reducers/products";
-import { updateProduct } from "../../store/reducers/cart";
 import BodyText from "../../components/ui/text/BodyText";
-import { postAddProduct } from "../../store/thunks/products";
+import { updateProduct, addProduct } from "../../store/thunks/products";
+import Colors from "../../constants/colors";
 
 interface InputData {
   title: string;
@@ -31,6 +42,7 @@ const EditProductScreen: FC = () => {
   const dispatch = useAppDispatch();
   const navigation = useNavigation<EditProductScreenNavProp>();
   const { params } = useRoute<EditProductScreenRouteProp>();
+
   const { handleSubmit, control, errors } = useForm<InputData>({
     defaultValues: {
       title: params?.product.title || "",
@@ -39,36 +51,38 @@ const EditProductScreen: FC = () => {
       description: params?.product.description || "",
     },
   });
+  const [isLoading, setIsLoading] = useState(false);
 
   const onValidSubmission = useCallback(
     async (data: InputData) => {
-      if (params) {
-        const updateProductPayload: UpdateProductPayload = {
-          productId: params.product.id,
-          title: data.title,
-          imageUrl: data.imageUrl,
-          description: data.description,
-        };
-        batch(() => {
-          dispatch(updateUserProduct(updateProductPayload));
-          dispatch(updateProduct(updateProductPayload));
-        });
-      } else {
-        try {
-          const thunkResult = await dispatch(
-            postAddProduct({
-              ownerId: "u1",
-              title: data.title,
-              imageUrl: data.imageUrl,
-              price: +data.price,
-              description: data.description,
-            }),
+      try {
+        setIsLoading(true);
+        if (params) {
+          const updateProductPayload: UpdateProductPayload = {
+            id: params.product.id,
+            title: data.title,
+            imageUrl: data.imageUrl,
+            description: data.description,
+          };
+          unwrapResult(await dispatch(updateProduct(updateProductPayload)));
+        } else {
+          unwrapResult(
+            await dispatch(
+              addProduct({
+                ownerId: "u1",
+                title: data.title,
+                imageUrl: data.imageUrl,
+                price: +data.price,
+                description: data.description,
+              }),
+            ),
           );
-          unwrapResult(thunkResult);
-          navigation.goBack();
-        } catch (error) {
-          Alert.alert("An error occurred", error.message, [{ text: "OK" }]);
         }
+        navigation.goBack();
+      } catch (error) {
+        Alert.alert("An error occurred", error.message, [{ text: "OK" }]);
+      } finally {
+        setIsLoading(false);
       }
     },
     [dispatch, navigation, params],
@@ -77,20 +91,34 @@ const EditProductScreen: FC = () => {
   useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle: params ? "Edit Product" : "Add Product",
+    });
+  }, [navigation, params]);
+
+  useEffect(() => {
+    navigation.setOptions({
       headerRight: () => (
         <HeaderButtons HeaderButtonComponent={AppHeaderButton}>
           <Item
             title="Save"
             iconName="checkmark-circle"
+            disabled={isLoading}
             onPress={handleSubmit(onValidSubmission)}
           />
         </HeaderButtons>
       ),
     });
-  }, [handleSubmit, navigation, onValidSubmission, params]);
+  }, [handleSubmit, isLoading, navigation, onValidSubmission]);
+
+  if (isLoading) {
+    return (
+      <View style={styles.screenBody1}>
+        <ActivityIndicator size="large" color={Colors.Primary} />
+      </View>
+    );
+  }
 
   return (
-    <ScrollView contentContainerStyle={styles.screenBody}>
+    <ScrollView contentContainerStyle={styles.screenBody2}>
       <View style={styles.formControl}>
         <HeadingText style={styles.label}>Title</HeadingText>
         <Controller
@@ -193,7 +221,12 @@ const EditProductScreen: FC = () => {
 };
 
 const styles = StyleSheet.create({
-  screenBody: {
+  screenBody1: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  screenBody2: {
     paddingTop: 20,
     paddingHorizontal: 20,
   },

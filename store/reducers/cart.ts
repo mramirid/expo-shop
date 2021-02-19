@@ -2,7 +2,8 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { RootState } from "../types";
 import { Cart } from "../../types/cart";
-import Product, { UpdateProductPayload } from "../../types/product";
+import Product from "../../types/product";
+import { deleteProduct, updateProduct } from "../thunks/products";
 
 type CartState = Cart;
 
@@ -46,24 +47,27 @@ const cartSlice = createSlice({
       state.items = [];
       state.totalAmount = 0;
     },
-    updateProduct(state, action: PayloadAction<UpdateProductPayload>) {
-      const itemIndex = state.items.findIndex(
-        (item) => item.productId === action.payload.productId,
-      );
-      if (itemIndex >= 0) {
-        state.items[itemIndex].title = action.payload.title;
-      }
-    },
-    deleteProduct(state, action: PayloadAction<string>) {
-      const itemIndex = state.items.findIndex(
-        (item) => item.productId === action.payload,
-      );
-      if (itemIndex >= 0) {
-        state.totalAmount -=
-          state.items[itemIndex].price * state.items[itemIndex].qty;
-        state.items.splice(itemIndex, 1);
-      }
-    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(updateProduct.fulfilled, (state, action) => {
+        const itemIndex = state.items.findIndex(
+          (item) => item.productId === action.payload.id,
+        );
+        if (itemIndex >= 0) {
+          state.items[itemIndex].title = action.payload.title;
+        }
+      })
+      .addCase(deleteProduct.fulfilled, (state, action) => {
+        const itemIndex = state.items.findIndex(
+          (item) => item.productId === action.payload,
+        );
+        if (itemIndex >= 0) {
+          state.totalAmount -=
+            state.items[itemIndex].price * state.items[itemIndex].qty;
+          state.items.splice(itemIndex, 1);
+        }
+      });
   },
 });
 
@@ -72,12 +76,6 @@ export const selectCartTotalAmount = (state: RootState) => {
   return state.cart.totalAmount;
 };
 
-export const {
-  addToCart,
-  removeItem,
-  clearCart,
-  updateProduct,
-  deleteProduct,
-} = cartSlice.actions;
+export const { addToCart, removeItem, clearCart } = cartSlice.actions;
 
 export default cartSlice.reducer;

@@ -7,7 +7,7 @@ export interface AddProductPayload {
 }
 
 export interface UpdateProductPayload {
-  productId: string;
+  id: string;
   title: string;
   imageUrl: string;
   description: string;
