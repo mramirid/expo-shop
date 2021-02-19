@@ -139,7 +139,7 @@ const EditProductScreen: FC = () => {
           name="title"
           errors={errors}
           render={({ message }) => (
-            <BodyText style={styles.inputErrors}>{message}</BodyText>
+            <BodyText style={styles.inputError}>{message}</BodyText>
           )}
         />
       </View>
@@ -162,7 +162,7 @@ const EditProductScreen: FC = () => {
           name="imageUrl"
           errors={errors}
           render={({ message }) => (
-            <BodyText style={styles.inputErrors}>{message}</BodyText>
+            <BodyText style={styles.inputError}>{message}</BodyText>
           )}
         />
       </View>
@@ -190,7 +190,7 @@ const EditProductScreen: FC = () => {
           name="price"
           errors={errors}
           render={({ message }) => (
-            <BodyText style={styles.inputErrors}>{message}</BodyText>
+            <BodyText style={styles.inputError}>{message}</BodyText>
           )}
         />
       </View>
@@ -215,7 +215,7 @@ const EditProductScreen: FC = () => {
           name="description"
           errors={errors}
           render={({ message }) => (
-            <BodyText style={styles.inputErrors}>{message}</BodyText>
+            <BodyText style={styles.inputError}>{message}</BodyText>
           )}
         />
       </View>
@@ -246,7 +246,7 @@ const styles = StyleSheet.create({
     borderBottomColor: "#ccc",
     borderBottomWidth: 1,
   },
-  inputErrors: {
+  inputError: {
     color: "red",
   },
 });

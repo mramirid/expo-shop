@@ -27,9 +27,9 @@ export const fetchOrders = createAsyncThunk<Order[], void, AppThunkAPIConfig>(
         });
       }
       return orders;
-    } catch (err) {
+    } catch (_) {
       return thunkAPI.rejectWithValue({
-        statusCode: 400,
+        statusCode: 200,
         message: "Cannot reach the server, try again later",
       });
     }
@@ -62,9 +62,9 @@ export const addOrder = createAsyncThunk<Order, Cart, AppThunkAPIConfig>(
         id: resData.name,
         ...newOrder,
       };
-    } catch (err) {
+    } catch (_) {
       return thunkAPI.rejectWithValue({
-        statusCode: 400,
+        statusCode: 200,
         message: "Cannot reach the server, try again later",
       });
     }

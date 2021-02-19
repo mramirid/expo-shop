@@ -32,9 +32,9 @@ export const fetchProducts = createAsyncThunk<
       });
     }
     return products;
-  } catch (err) {
+  } catch (_) {
     return thunkAPI.rejectWithValue({
-      statusCode: 400,
+      statusCode: 200,
       message: "Cannot reach the server, try again later",
     });
   }
@@ -64,9 +64,9 @@ export const addProduct = createAsyncThunk<
       id: resData.name,
       ...payload,
     };
-  } catch (err) {
+  } catch (_) {
     return thunkAPI.rejectWithValue({
-      statusCode: 400,
+      statusCode: 200,
       message: "Cannot reach the server, try again later",
     });
   }
@@ -97,9 +97,9 @@ export const updateProduct = createAsyncThunk<
       });
     }
     return payload;
-  } catch (err) {
+  } catch (_) {
     return thunkAPI.rejectWithValue({
-      statusCode: 400,
+      statusCode: 200,
       message: "Cannot reach the server, try again later",
     });
   }
@@ -121,9 +121,9 @@ export const deleteProduct = createAsyncThunk<
       });
     }
     return payload;
-  } catch (err) {
+  } catch (_) {
     return thunkAPI.rejectWithValue({
-      statusCode: 400,
+      statusCode: 200,
       message: "Cannot reach the server, try again later",
     });
   }
