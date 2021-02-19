@@ -19,8 +19,9 @@ import { ErrorMessage } from "@hookform/error-message";
 import Colors from "../../constants/colors";
 import HeadingText from "../../components/ui/text/HeadingText";
 import { AuthScreenNavProp } from "../../navigation/AuthStack/types";
-import { signUp } from "../../store/thunks/auth";
+import { signIn, signUp } from "../../store/thunks/auth";
 import { useAppDispatch } from "../../store/types";
+import { AuthInputPayload } from "../../types/auth";
 
 interface InputData {
   email: string;
@@ -31,36 +32,38 @@ const AuthScreen: FC = () => {
   const dispatch = useAppDispatch();
   const navigation = useNavigation<AuthScreenNavProp>();
 
+  const [isSignIn, setIsSignIn] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const { control, errors, handleSubmit } = useForm<InputData>({
     defaultValues: {
       email: "",
       password: "",
     },
   });
-  const [isLoading, setIsLoading] = useState(false);
 
   useLayoutEffect(() => {
     navigation.setOptions({ headerTitle: "Authenticate" });
   }, [navigation]);
 
-  const onSignUp = useCallback(
+  const onAuthenticate = useCallback(
     async (data: InputData) => {
       try {
         setIsLoading(true);
-        unwrapResult(
-          await dispatch(
-            signUp({
-              ...data,
-              returnSecureToken: true,
-            }),
-          ),
-        );
+        const payload: AuthInputPayload = {
+          ...data,
+          returnSecureToken: true,
+        };
+        if (isSignIn) {
+          unwrapResult(await dispatch(signIn(payload)));
+        } else {
+          unwrapResult(await dispatch(signUp(payload)));
+        }
       } catch (error) {
         Alert.alert("An error occurred", error.message, [{ text: "OK" }]);
         setIsLoading(false);
       }
     },
-    [dispatch],
+    [dispatch, isSignIn],
   );
 
   let actionButtons: JSX.Element;
@@ -71,16 +74,16 @@ const AuthScreen: FC = () => {
       <>
         <View style={styles.buttonContainer}>
           <Button
-            title="SIGN UP"
+            title={isSignIn ? "SIGN IN" : "SIGN UP"}
             color={Colors.Primary}
-            onPress={handleSubmit(onSignUp)}
+            onPress={handleSubmit(onAuthenticate)}
           />
         </View>
         <View style={styles.buttonContainer}>
           <Button
-            title="SWITCH TO SIGNUP"
+            title={`SWITCH TO ${isSignIn ? "SIGN UP" : "SIGN IN"}`}
             color={Colors.Accent}
-            onPress={() => null}
+            onPress={() => setIsSignIn((isSignIn) => !isSignIn)}
           />
         </View>
       </>
@@ -91,6 +94,9 @@ const AuthScreen: FC = () => {
     <LinearGradient style={styles.screen} colors={["#ffedff", "#ffe3ff"]}>
       <AppCard style={styles.formCard}>
         <ScrollView>
+          <HeadingText style={styles.formTitle}>
+            {isSignIn ? "Sign In" : "Sign Up"}
+          </HeadingText>
           <View style={styles.formControl}>
             <HeadingText style={styles.label}>Email</HeadingText>
             <Controller
@@ -171,6 +177,10 @@ const styles = StyleSheet.create({
     maxWidth: 400,
     maxHeight: 400,
     padding: 20,
+  },
+  formTitle: {
+    marginBottom: 10,
+    textAlign: "center",
   },
   formControl: {
     width: "100%",

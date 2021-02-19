@@ -1,7 +1,7 @@
 import { createSelector, createSlice } from "@reduxjs/toolkit";
-import { signUp } from "../thunks/auth";
 
 import { RootState } from "../types";
+import { signIn, signUp } from "../thunks/auth";
 
 export interface AuthState {
   userId: string | null;
@@ -24,6 +24,10 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(signUp.fulfilled, (state, action) => {
+      state.userId = action.payload.localId;
+      state.token = action.payload.idToken;
+    });
+    builder.addCase(signIn.fulfilled, (state, action) => {
       state.userId = action.payload.localId;
       state.token = action.payload.idToken;
     });

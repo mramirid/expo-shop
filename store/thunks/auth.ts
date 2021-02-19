@@ -1,12 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 import { AppThunkAPIConfig } from "../types";
-
-interface InputAuthPayload {
-  email: string;
-  password: string;
-  returnSecureToken: boolean;
-}
+import { AuthInputPayload } from "../../types/auth";
 
 /*
  * Firebase Auth REST API
@@ -40,7 +35,7 @@ interface FireSignupResBody extends FireAuthResBody {
 
 export const signUp = createAsyncThunk<
   FireAuthResBody,
-  InputAuthPayload,
+  AuthInputPayload,
   AppThunkAPIConfig
 >("auth/signUp", async (payload, thunkAPI) => {
   try {
@@ -78,7 +73,7 @@ export const signUp = createAsyncThunk<
 
 export const signIn = createAsyncThunk<
   FireAuthResBody,
-  InputAuthPayload,
+  AuthInputPayload,
   AppThunkAPIConfig
 >("auth/signIn", async (payload, thunkAPI) => {
   try {
