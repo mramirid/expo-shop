@@ -1,13 +1,9 @@
 import Cart from "./cart";
 
-export interface AddOrderPayload extends Cart {
-  readonly date: number;
+export interface OrderData extends Cart {
+  date: number;
 }
 
-export default interface Order extends AddOrderPayload {
-  readonly id: string;
-}
-
-export interface FireGETOrders {
-  [orderId: string]: AddOrderPayload;
+export default interface Order extends OrderData {
+  id: string;
 }

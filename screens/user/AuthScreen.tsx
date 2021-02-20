@@ -32,7 +32,7 @@ const AuthScreen: FC = () => {
   const dispatch = useAppDispatch();
   const navigation = useNavigation<AuthScreenNavProp>();
 
-  const [isSignIn, setIsSignIn] = useState(false);
+  const [isSignIn, setIsSignIn] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const { control, errors, handleSubmit } = useForm<InputData>({
     defaultValues: {

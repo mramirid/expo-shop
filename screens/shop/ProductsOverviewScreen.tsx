@@ -22,18 +22,20 @@ import Colors from "../../constants/colors";
 import { fetchProducts } from "../../store/thunks/products";
 import { HttpError } from "../../types/errors";
 import BodyText from "../../components/ui/text/BodyText";
+import { selectUserAuth } from "../../store/reducers/auth";
 
 const ProductsOverviewScreen: FC = () => {
   const dispatch = useAppDispatch();
   const navigation = useNavigation<ProductsOverviewScreenNavProp>();
 
+  const userAuth = useAppSelector(selectUserAuth);
   const products = useAppSelector(selectProducts);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<HttpError | null>(null);
 
   const onfetchProducts = useCallback(() => {
     setIsLoading(true);
-    dispatch(fetchProducts())
+    dispatch(fetchProducts(userAuth))
       .then(unwrapResult)
       .then(() => setError(null))
       .catch((error: HttpError) => {
@@ -41,7 +43,7 @@ const ProductsOverviewScreen: FC = () => {
         Alert.alert("An error occurred", error.message, [{ text: "OK" }]);
       })
       .finally(() => setIsLoading(false));
-  }, [dispatch]);
+  }, [dispatch, userAuth]);
 
   useLayoutEffect(() => {
     onfetchProducts();

@@ -2,13 +2,9 @@ import { createSelector, createSlice } from "@reduxjs/toolkit";
 
 import { RootState } from "../types";
 import { signIn, signUp } from "../thunks/auth";
+import { UserAuth } from "../../types/auth";
 
-export interface AuthState {
-  userId: string | null;
-  token: string | null;
-}
-
-export const initialState: AuthState = {
+const initialState: UserAuth = {
   userId: null,
   token: null,
 };
@@ -34,10 +30,12 @@ const authSlice = createSlice({
   },
 });
 
-export const selectToken = (state: RootState) => state.auth.token;
-export const selectUserId = (state: RootState) => state.auth.userId;
+export const selectUserAuth = (state: RootState) => state.auth;
 export const selectIsAuth = createSelector(
-  [selectToken, selectUserId],
+  [
+    (state: RootState) => state.auth.token,
+    (state: RootState) => state.auth.userId,
+  ],
   (token, userId) => !!token && !!userId,
 );
 

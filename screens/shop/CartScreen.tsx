@@ -23,11 +23,13 @@ import {
 } from "../../store/reducers/cart";
 import { useAppDispatch, useAppSelector } from "../../store/types";
 import { addOrder } from "../../store/thunks/orders";
+import { selectUserAuth } from "../../store/reducers/auth";
 
 const CartScreen: FC = () => {
   const dispatch = useAppDispatch();
   const navigation = useNavigation<CartScreenNavProp>();
 
+  const userAuth = useAppSelector(selectUserAuth);
   const cartItems = useAppSelector(selectCartItems);
   const cartTotalAmount = useAppSelector(selectCartTotalAmount);
   const [isLoading, setIsLoading] = useState(false);
@@ -41,7 +43,13 @@ const CartScreen: FC = () => {
       setIsLoading(true);
       unwrapResult(
         await dispatch(
-          addOrder({ items: cartItems, totalAmount: cartTotalAmount }),
+          addOrder({
+            userAuth,
+            data: {
+              items: cartItems,
+              totalAmount: cartTotalAmount,
+            },
+          }),
         ),
       );
     } catch (error) {
@@ -49,7 +57,7 @@ const CartScreen: FC = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [cartItems, cartTotalAmount, dispatch]);
+  }, [cartItems, cartTotalAmount, dispatch, userAuth]);
 
   return (
     <View style={styles.screen2}>

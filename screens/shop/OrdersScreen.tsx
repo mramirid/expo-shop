@@ -18,18 +18,20 @@ import OrderItem from "../../components/shop/OrderItem";
 import BodyText from "../../components/ui/text/BodyText";
 import { fetchOrders } from "../../store/thunks/orders";
 import { HttpError } from "../../types/errors";
+import { selectUserAuth } from "../../store/reducers/auth";
 
 const OrdersScreen: FC = () => {
   const dispatch = useAppDispatch();
   const navigation = useNavigation<OrderScreenNavProp>();
 
+  const userAuth = useAppSelector(selectUserAuth);
   const orders = useAppSelector(selectOrders);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<HttpError | null>(null);
 
   const onFetchOrders = useCallback(() => {
     setIsLoading(true);
-    dispatch(fetchOrders())
+    dispatch(fetchOrders(userAuth))
       .then(unwrapResult)
       .then(() => setError(null))
       .catch((error: HttpError) => {
@@ -37,7 +39,7 @@ const OrdersScreen: FC = () => {
         Alert.alert("An error occurred", error.message, [{ text: "OK" }]);
       })
       .finally(() => setIsLoading(false));
-  }, [dispatch]);
+  }, [dispatch, userAuth]);
 
   useLayoutEffect(() => {
     onFetchOrders();

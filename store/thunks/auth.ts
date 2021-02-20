@@ -3,9 +3,6 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { AppThunkAPIConfig } from "../types";
 import { AuthInputPayload } from "../../types/auth";
 
-/*
- * Firebase Auth REST API
- */
 interface FireAuthErrorResBody {
   error: {
     code: number;

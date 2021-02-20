@@ -25,10 +25,10 @@ const productsSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchProducts.fulfilled, (state, action) => {
-        state.products = action.payload;
-        state.userProducts = action.payload.filter(
-          (product) => product.ownerId === "u1",
+      .addCase(fetchProducts.fulfilled, (state, { payload }) => {
+        state.products = payload.products;
+        state.userProducts = payload.products.filter(
+          (product) => product.ownerId === payload.userId,
         );
       })
       .addCase(addProduct.fulfilled, (state, action) => {
@@ -37,31 +37,27 @@ const productsSlice = createSlice({
       })
       .addCase(updateProduct.fulfilled, (state, { payload }) => {
         let itemIndex = state.products.findIndex(
-          (product) => product.id === payload.id,
+          (product) => product.id === payload.productId,
         );
         state.products[itemIndex] = {
           ...state.products[itemIndex],
-          title: payload.title,
-          imageUrl: payload.imageUrl,
-          description: payload.description,
+          ...payload.data,
         };
 
         itemIndex = state.userProducts.findIndex(
-          (product) => product.id === payload.id,
+          (product) => product.id === payload.productId,
         );
         state.userProducts[itemIndex] = {
           ...state.userProducts[itemIndex],
-          title: payload.title,
-          imageUrl: payload.imageUrl,
-          description: payload.description,
+          ...payload.data,
         };
       })
       .addCase(deleteProduct.fulfilled, (state, action) => {
         state.userProducts = state.userProducts.filter(
-          (userProduct) => userProduct.id !== action.payload,
+          (userProduct) => userProduct.id !== action.payload.productId,
         );
         state.products = state.products.filter(
-          (product) => product.id !== action.payload,
+          (product) => product.id !== action.payload.productId,
         );
       });
   },

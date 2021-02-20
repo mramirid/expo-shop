@@ -6,9 +6,7 @@ import Product from "../../types/product";
 import { deleteProduct, updateProduct } from "../thunks/products";
 import { addOrder } from "../thunks/orders";
 
-type CartState = Cart;
-
-const initialState: CartState = {
+const initialState: Cart = {
   items: [],
   totalAmount: 0,
 };
@@ -47,17 +45,17 @@ const cartSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(updateProduct.fulfilled, (state, action) => {
+      .addCase(updateProduct.fulfilled, (state, { payload }) => {
         const itemIndex = state.items.findIndex(
-          (item) => item.productId === action.payload.id,
+          (item) => item.productId === payload.productId,
         );
         if (itemIndex >= 0) {
-          state.items[itemIndex].title = action.payload.title;
+          state.items[itemIndex].title = payload.data.title;
         }
       })
       .addCase(deleteProduct.fulfilled, (state, action) => {
         const itemIndex = state.items.findIndex(
-          (item) => item.productId === action.payload,
+          (item) => item.productId === action.payload.productId,
         );
         if (itemIndex >= 0) {
           state.totalAmount -=

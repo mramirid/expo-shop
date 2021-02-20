@@ -21,18 +21,20 @@ import Colors from "../../constants/colors";
 import { deleteProduct, fetchProducts } from "../../store/thunks/products";
 import { HttpError } from "../../types/errors";
 import BodyText from "../../components/ui/text/BodyText";
+import { selectUserAuth } from "../../store/reducers/auth";
 
 const UserProductsScreen: FC = () => {
   const dispatch = useAppDispatch();
   const navigation = useNavigation<UserProductsScreenNavProp>();
 
+  const userAuth = useAppSelector(selectUserAuth);
   const userProducts = useAppSelector(selectUserProducts);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<HttpError | null>(null);
 
   const onfetchProducts = useCallback(() => {
     setIsLoading(true);
-    dispatch(fetchProducts())
+    dispatch(fetchProducts(userAuth))
       .then(unwrapResult)
       .then(() => setError(null))
       .catch((error: HttpError) => {
@@ -40,7 +42,7 @@ const UserProductsScreen: FC = () => {
         Alert.alert("An error occurred", error.message, [{ text: "OK" }]);
       })
       .finally(() => setIsLoading(false));
-  }, [dispatch]);
+  }, [dispatch, userAuth]);
 
   useLayoutEffect(() => {
     onfetchProducts();
@@ -76,7 +78,9 @@ const UserProductsScreen: FC = () => {
         onPress: async () => {
           try {
             setIsLoading(true);
-            unwrapResult(await dispatch(deleteProduct(productId)));
+            unwrapResult(
+              await dispatch(deleteProduct({ userAuth, productId })),
+            );
           } catch (error) {
             Alert.alert("An error occurred", error.message, [{ text: "OK" }]);
           } finally {

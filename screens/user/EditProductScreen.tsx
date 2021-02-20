@@ -25,11 +25,11 @@ import {
   EditProductScreenNavProp,
   EditProductScreenRouteProp,
 } from "../../navigation/UserProductsStack/types";
-import { UpdateProductPayload } from "../../types/product";
-import { useAppDispatch } from "../../store/types";
+import { useAppDispatch, useAppSelector } from "../../store/types";
 import BodyText from "../../components/ui/text/BodyText";
 import { updateProduct, addProduct } from "../../store/thunks/products";
 import Colors from "../../constants/colors";
+import { selectUserAuth } from "../../store/reducers/auth";
 
 interface InputData {
   title: string;
@@ -43,6 +43,7 @@ const EditProductScreen: FC = () => {
   const navigation = useNavigation<EditProductScreenNavProp>();
   const { params } = useRoute<EditProductScreenRouteProp>();
 
+  const userAuth = useAppSelector(selectUserAuth);
   const { handleSubmit, control, errors } = useForm<InputData>({
     defaultValues: {
       title: params?.product.title || "",
@@ -58,22 +59,25 @@ const EditProductScreen: FC = () => {
       try {
         setIsLoading(true);
         if (params) {
-          const updateProductPayload: UpdateProductPayload = {
-            id: params.product.id,
-            title: data.title,
-            imageUrl: data.imageUrl,
-            description: data.description,
-          };
-          unwrapResult(await dispatch(updateProduct(updateProductPayload)));
+          unwrapResult(
+            await dispatch(
+              updateProduct({
+                userAuth,
+                productId: params.product.id,
+                data: {
+                  title: data.title,
+                  imageUrl: data.imageUrl,
+                  description: data.description,
+                },
+              }),
+            ),
+          );
         } else {
           unwrapResult(
             await dispatch(
               addProduct({
-                ownerId: "u1",
-                title: data.title,
-                imageUrl: data.imageUrl,
-                price: +data.price,
-                description: data.description,
+                userAuth,
+                data: { ...data, price: +data.price },
               }),
             ),
           );
@@ -85,7 +89,7 @@ const EditProductScreen: FC = () => {
         setIsLoading(false);
       }
     },
-    [dispatch, navigation, params],
+    [dispatch, navigation, params, userAuth],
   );
 
   useLayoutEffect(() => {
