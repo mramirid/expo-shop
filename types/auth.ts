@@ -7,4 +7,11 @@ export interface AuthInputPayload {
 export interface UserAuth {
   userId: string | null;
   token: string | null;
+  expirationDate: number | null;
+}
+
+export interface FireAuthResBody {
+  idToken: string;
+  expiresIn: string;
+  localId: string;
 }

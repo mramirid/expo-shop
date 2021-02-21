@@ -30,6 +30,7 @@ import BodyText from "../../components/ui/text/BodyText";
 import { updateProduct, addProduct } from "../../store/thunks/products";
 import Colors from "../../constants/colors";
 import { selectUserAuth } from "../../store/reducers/auth";
+import useIsMounted from "../../hooks/useIsMounted";
 
 interface InputData {
   title: string;
@@ -42,6 +43,7 @@ const EditProductScreen: FC = () => {
   const dispatch = useAppDispatch();
   const navigation = useNavigation<EditProductScreenNavProp>();
   const { params } = useRoute<EditProductScreenRouteProp>();
+  const { runInMounted } = useIsMounted();
 
   const userAuth = useAppSelector(selectUserAuth);
   const { handleSubmit, control, errors } = useForm<InputData>({
@@ -82,14 +84,16 @@ const EditProductScreen: FC = () => {
             ),
           );
         }
-        navigation.goBack();
+        runInMounted(() => navigation.goBack());
       } catch (error) {
-        Alert.alert("An error occurred", error.message, [{ text: "OK" }]);
+        runInMounted(() => {
+          Alert.alert("An error occurred", error.message, [{ text: "OK" }]);
+        });
       } finally {
-        setIsLoading(false);
+        runInMounted(() => setIsLoading(false));
       }
     },
-    [dispatch, navigation, params, userAuth],
+    [dispatch, navigation, params, runInMounted, userAuth],
   );
 
   useLayoutEffect(() => {

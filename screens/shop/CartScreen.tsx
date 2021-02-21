@@ -24,10 +24,12 @@ import {
 import { useAppDispatch, useAppSelector } from "../../store/types";
 import { addOrder } from "../../store/thunks/orders";
 import { selectUserAuth } from "../../store/reducers/auth";
+import useIsMounted from "../../hooks/useIsMounted";
 
 const CartScreen: FC = () => {
   const dispatch = useAppDispatch();
   const navigation = useNavigation<CartScreenNavProp>();
+  const { runInMounted } = useIsMounted();
 
   const userAuth = useAppSelector(selectUserAuth);
   const cartItems = useAppSelector(selectCartItems);
@@ -53,11 +55,13 @@ const CartScreen: FC = () => {
         ),
       );
     } catch (error) {
-      Alert.alert("An error occurred", error.message, [{ text: "OK" }]);
+      runInMounted(() => {
+        Alert.alert("An error occurred", error.message, [{ text: "OK" }]);
+      });
     } finally {
-      setIsLoading(false);
+      runInMounted(() => setIsLoading(false));
     }
-  }, [cartItems, cartTotalAmount, dispatch, userAuth]);
+  }, [cartItems, cartTotalAmount, dispatch, runInMounted, userAuth]);
 
   return (
     <View style={styles.screen2}>

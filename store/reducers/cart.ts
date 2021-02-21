@@ -42,6 +42,10 @@ const cartSlice = createSlice({
         state.items.splice(itemIndex, 1);
       }
     },
+    clearCartState(state) {
+      state.items = [];
+      state.totalAmount = 0;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -75,6 +79,6 @@ export const selectCartTotalAmount = (state: RootState) => {
   return state.cart.totalAmount;
 };
 
-export const { addToCart, removeItem } = cartSlice.actions;
+export const { addToCart, removeItem, clearCartState } = cartSlice.actions;
 
 export default cartSlice.reducer;

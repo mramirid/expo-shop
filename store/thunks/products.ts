@@ -28,6 +28,9 @@ export const fetchProducts = createAsyncThunk<
   try {
     const res = await fetch(
       `${process.env.DB_URL}/products.json?auth=${payload.token}`,
+      {
+        signal: thunkAPI.signal,
+      },
     );
 
     if (!res.ok) {

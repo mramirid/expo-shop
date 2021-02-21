@@ -1,19 +1,13 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 import { AppThunkAPIConfig } from "../types";
-import { AuthInputPayload } from "../../types/auth";
+import { AuthInputPayload, FireAuthResBody } from "../../types/auth";
 
 interface FireAuthErrorResBody {
   error: {
     code: number;
     message: string;
   };
-}
-
-interface FireAuthResBody {
-  idToken: string;
-  expiresIn: string;
-  localId: string;
 }
 
 interface FireSigninResBody extends FireAuthResBody {

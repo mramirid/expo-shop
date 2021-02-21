@@ -22,10 +22,12 @@ import { deleteProduct, fetchProducts } from "../../store/thunks/products";
 import { HttpError } from "../../types/errors";
 import BodyText from "../../components/ui/text/BodyText";
 import { selectUserAuth } from "../../store/reducers/auth";
+import useIsMounted from "../../hooks/useIsMounted";
 
 const UserProductsScreen: FC = () => {
   const dispatch = useAppDispatch();
   const navigation = useNavigation<UserProductsScreenNavProp>();
+  const { runInMounted } = useIsMounted();
 
   const userAuth = useAppSelector(selectUserAuth);
   const userProducts = useAppSelector(selectUserProducts);
@@ -34,15 +36,19 @@ const UserProductsScreen: FC = () => {
 
   const onfetchProducts = useCallback(() => {
     setIsLoading(true);
-    dispatch(fetchProducts(userAuth))
+    const fetchProductsThunk = dispatch(fetchProducts(userAuth));
+    fetchProductsThunk
       .then(unwrapResult)
-      .then(() => setError(null))
+      .then(() => runInMounted(() => setError(null)))
       .catch((error: HttpError) => {
-        setError(error);
-        Alert.alert("An error occurred", error.message, [{ text: "OK" }]);
+        runInMounted(() => {
+          setError(error);
+          Alert.alert("An error occurred", error.message, [{ text: "OK" }]);
+        });
       })
-      .finally(() => setIsLoading(false));
-  }, [dispatch, userAuth]);
+      .finally(() => runInMounted(() => setIsLoading(false)));
+    return () => fetchProductsThunk.abort();
+  }, [dispatch, runInMounted, userAuth]);
 
   useLayoutEffect(() => {
     onfetchProducts();
@@ -82,9 +88,11 @@ const UserProductsScreen: FC = () => {
               await dispatch(deleteProduct({ userAuth, productId })),
             );
           } catch (error) {
-            Alert.alert("An error occurred", error.message, [{ text: "OK" }]);
+            runInMounted(() => {
+              Alert.alert("An error occurred", error.message, [{ text: "OK" }]);
+            });
           } finally {
-            setIsLoading(false);
+            runInMounted(() => setIsLoading(false));
           }
         },
       },

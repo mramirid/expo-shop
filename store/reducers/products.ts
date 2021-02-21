@@ -22,7 +22,12 @@ const initialState: ProductsState = {
 const productsSlice = createSlice({
   name: "products",
   initialState,
-  reducers: {},
+  reducers: {
+    clearProductsState(state) {
+      state.products = [];
+      state.userProducts = [];
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchProducts.fulfilled, (state, { payload }) => {
@@ -67,5 +72,7 @@ export const selectProducts = (state: RootState) => state.products.products;
 export const selectUserProducts = (state: RootState) => {
   return state.products.userProducts;
 };
+
+export const { clearProductsState } = productsSlice.actions;
 
 export default productsSlice.reducer;

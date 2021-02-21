@@ -1,4 +1,4 @@
-import { createSelector, createSlice } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 
 import { RootState } from "../types";
 import { signIn, signUp } from "../thunks/auth";
@@ -7,6 +7,7 @@ import { UserAuth } from "../../types/auth";
 const initialState: UserAuth = {
   userId: null,
   token: null,
+  expirationDate: null,
 };
 
 const authSlice = createSlice({
@@ -16,28 +17,31 @@ const authSlice = createSlice({
     logout(state) {
       state.token = null;
       state.userId = null;
+      state.expirationDate = null;
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(signUp.fulfilled, (state, action) => {
-      state.userId = action.payload.localId;
-      state.token = action.payload.idToken;
+    builder.addCase(signUp.fulfilled, (state, { payload }) => {
+      state.userId = payload.localId;
+      state.token = payload.idToken;
+      const expireDuration = +payload.expiresIn * 1000;
+      state.expirationDate = new Date().getTime() + expireDuration;
     });
-    builder.addCase(signIn.fulfilled, (state, action) => {
-      state.userId = action.payload.localId;
-      state.token = action.payload.idToken;
+    builder.addCase(signIn.fulfilled, (state, { payload }) => {
+      const expireDuration = +payload.expiresIn * 1000;
+      state.userId = payload.localId;
+      state.token = payload.idToken;
+      state.expirationDate = new Date().getTime() + expireDuration;
     });
   },
 });
 
 export const selectUserAuth = (state: RootState) => state.auth;
-export const selectIsAuth = createSelector(
-  [
-    (state: RootState) => state.auth.token,
-    (state: RootState) => state.auth.userId,
-  ],
-  (token, userId) => !!token && !!userId,
-);
+export const selectIsAuth = (state: RootState) => {
+  return (
+    !!state.auth.token && !!state.auth.userId && !!state.auth.expirationDate
+  );
+};
 
 export const { logout } = authSlice.actions;
 

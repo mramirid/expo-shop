@@ -18,9 +18,7 @@ const ProductDetailScreen: FC = () => {
   const { params } = useRoute<ProductDetailScreenRouteProp>();
 
   useLayoutEffect(() => {
-    navigation.setOptions({
-      headerTitle: params.product.title,
-    });
+    navigation.setOptions({ headerTitle: params.product.title });
   }, [navigation, params.product.title]);
 
   return (

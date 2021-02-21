@@ -23,27 +23,32 @@ import { fetchProducts } from "../../store/thunks/products";
 import { HttpError } from "../../types/errors";
 import BodyText from "../../components/ui/text/BodyText";
 import { selectUserAuth } from "../../store/reducers/auth";
+import useIsMounted from "../../hooks/useIsMounted";
 
 const ProductsOverviewScreen: FC = () => {
   const dispatch = useAppDispatch();
   const navigation = useNavigation<ProductsOverviewScreenNavProp>();
+  const { runInMounted } = useIsMounted();
 
   const userAuth = useAppSelector(selectUserAuth);
   const products = useAppSelector(selectProducts);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<HttpError | null>(null);
 
-  const onfetchProducts = useCallback(() => {
-    setIsLoading(true);
-    dispatch(fetchProducts(userAuth))
-      .then(unwrapResult)
-      .then(() => setError(null))
-      .catch((error: HttpError) => {
+  const onfetchProducts = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      unwrapResult(await dispatch(fetchProducts(userAuth)));
+      runInMounted(() => setError(null));
+    } catch (error) {
+      runInMounted(() => {
         setError(error);
         Alert.alert("An error occurred", error.message, [{ text: "OK" }]);
-      })
-      .finally(() => setIsLoading(false));
-  }, [dispatch, userAuth]);
+      });
+    } finally {
+      runInMounted(() => setIsLoading(false));
+    }
+  }, [dispatch, runInMounted, userAuth]);
 
   useLayoutEffect(() => {
     onfetchProducts();

@@ -15,7 +15,11 @@ const initialState: OrdersState = {
 const ordersSlice = createSlice({
   name: "orders",
   initialState,
-  reducers: {},
+  reducers: {
+    clearOrdersState(state) {
+      state.items = [];
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchOrders.fulfilled, (state, action) => {
@@ -28,5 +32,7 @@ const ordersSlice = createSlice({
 });
 
 export const selectOrders = (state: RootState) => state.orders.items;
+
+export const { clearOrdersState } = ordersSlice.actions;
 
 export default ordersSlice.reducer;
