@@ -43,12 +43,6 @@ export const fetchProducts = createAsyncThunk<
         });
       }
 
-      await new Promise<void>((resolve) => {
-        setTimeout(() => {
-          resolve();
-        }, 15000);
-      });
-
       const resData: FireGETProducts = await res.json();
       const products: Product[] = [];
       for (const productId in resData) {

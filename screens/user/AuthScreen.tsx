@@ -22,6 +22,9 @@ import { AuthScreenNavProp } from "../../navigation/AuthStack/types";
 import { signIn, signUp } from "../../store/thunks/auth";
 import { useAppDispatch } from "../../store/types";
 import { AuthInputPayload } from "../../types/auth";
+import { clearCartState } from "../../store/reducers/cart";
+import { clearOrdersState } from "../../store/reducers/orders";
+import { clearProductsState } from "../../store/reducers/products";
 
 interface InputData {
   email: string;
@@ -58,6 +61,9 @@ const AuthScreen: FC = () => {
         } else {
           unwrapResult(await dispatch(signUp(payload)));
         }
+        dispatch(clearCartState());
+        dispatch(clearOrdersState());
+        dispatch(clearProductsState());
       } catch (error) {
         Alert.alert("An error occurred", error.message, [{ text: "OK" }]);
         setIsLoading(false);
