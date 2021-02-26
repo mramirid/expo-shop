@@ -28,7 +28,8 @@ const authSlice = createSlice({
       state.expirationDate = new Date().getTime() + expireDuration;
     });
     builder.addCase(signIn.fulfilled, (state, { payload }) => {
-      const expireDuration = +payload.expiresIn * 1000;
+      // const expireDuration = +payload.expiresIn * 1000;
+      const expireDuration = 10000;
       state.userId = payload.localId;
       state.token = payload.idToken;
       state.expirationDate = new Date().getTime() + expireDuration;

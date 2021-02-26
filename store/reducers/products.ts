@@ -46,7 +46,9 @@ const productsSlice = createSlice({
         );
         state.products[itemIndex] = {
           ...state.products[itemIndex],
-          ...payload.data,
+          title: payload.title,
+          imageUrl: payload.imageUrl,
+          description: payload.description,
         };
 
         itemIndex = state.userProducts.findIndex(
@@ -54,7 +56,9 @@ const productsSlice = createSlice({
         );
         state.userProducts[itemIndex] = {
           ...state.userProducts[itemIndex],
-          ...payload.data,
+          title: payload.title,
+          imageUrl: payload.imageUrl,
+          description: payload.description,
         };
       })
       .addCase(deleteProduct.fulfilled, (state, action) => {

@@ -14,24 +14,22 @@ import AppCard from "../../components/ui/AppCard";
 import BodyText from "../../components/ui/text/BodyText";
 import HeadingText from "../../components/ui/text/HeadingText";
 import Colors from "../../constants/colors";
+import useIsMounted from "../../hooks/useIsMounted";
 import CartItem from "../../components/shop/CartItem";
 import { CartScreenNavProp } from "../../navigation/ShopStack/types";
+import { useAppDispatch, useAppSelector } from "../../store/types";
+import { addOrder } from "../../store/thunks/orders";
 import {
   removeItem,
   selectCartItems,
   selectCartTotalAmount,
 } from "../../store/reducers/cart";
-import { useAppDispatch, useAppSelector } from "../../store/types";
-import { addOrder } from "../../store/thunks/orders";
-import { selectUserAuth } from "../../store/reducers/auth";
-import useIsMounted from "../../hooks/useIsMounted";
 
 const CartScreen: FC = () => {
   const dispatch = useAppDispatch();
   const navigation = useNavigation<CartScreenNavProp>();
   const { runInMounted } = useIsMounted();
 
-  const userAuth = useAppSelector(selectUserAuth);
   const cartItems = useAppSelector(selectCartItems);
   const cartTotalAmount = useAppSelector(selectCartTotalAmount);
   const [isLoading, setIsLoading] = useState(false);
@@ -46,11 +44,8 @@ const CartScreen: FC = () => {
       unwrapResult(
         await dispatch(
           addOrder({
-            userAuth,
-            data: {
-              items: cartItems,
-              totalAmount: cartTotalAmount,
-            },
+            items: cartItems,
+            totalAmount: cartTotalAmount,
           }),
         ),
       );
@@ -61,7 +56,7 @@ const CartScreen: FC = () => {
     } finally {
       runInMounted(() => setIsLoading(false));
     }
-  }, [cartItems, cartTotalAmount, dispatch, runInMounted, userAuth]);
+  }, [cartItems, cartTotalAmount, dispatch, runInMounted]);
 
   return (
     <View style={styles.screen2}>

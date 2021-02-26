@@ -18,7 +18,6 @@ import OrderItem from "../../components/shop/OrderItem";
 import BodyText from "../../components/ui/text/BodyText";
 import { fetchOrders } from "../../store/thunks/orders";
 import { HttpError } from "../../types/errors";
-import { selectUserAuth } from "../../store/reducers/auth";
 import useIsMounted from "../../hooks/useIsMounted";
 
 const OrdersScreen: FC = () => {
@@ -26,14 +25,13 @@ const OrdersScreen: FC = () => {
   const navigation = useNavigation<OrderScreenNavProp>();
   const { runInMounted } = useIsMounted();
 
-  const userAuth = useAppSelector(selectUserAuth);
   const orders = useAppSelector(selectOrders);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<HttpError | null>(null);
 
   const onFetchOrders = useCallback(() => {
     setIsLoading(true);
-    dispatch(fetchOrders(userAuth))
+    dispatch(fetchOrders())
       .then(unwrapResult)
       .then(() => runInMounted(() => setError(null)))
       .catch((error: HttpError) => {
@@ -43,7 +41,7 @@ const OrdersScreen: FC = () => {
         });
       })
       .finally(() => runInMounted(() => setIsLoading(false)));
-  }, [dispatch, runInMounted, userAuth]);
+  }, [dispatch, runInMounted]);
 
   useLayoutEffect(() => {
     onFetchOrders();

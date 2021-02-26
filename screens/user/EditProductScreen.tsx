@@ -25,14 +25,13 @@ import {
   EditProductScreenNavProp,
   EditProductScreenRouteProp,
 } from "../../navigation/UserProductsStack/types";
-import { useAppDispatch, useAppSelector } from "../../store/types";
+import { useAppDispatch } from "../../store/types";
 import BodyText from "../../components/ui/text/BodyText";
 import { updateProduct, addProduct } from "../../store/thunks/products";
 import Colors from "../../constants/colors";
-import { selectUserAuth } from "../../store/reducers/auth";
 import useIsMounted from "../../hooks/useIsMounted";
 
-interface InputData {
+interface ProductInputData {
   title: string;
   imageUrl: string;
   price: string;
@@ -45,8 +44,7 @@ const EditProductScreen: FC = () => {
   const { params } = useRoute<EditProductScreenRouteProp>();
   const { runInMounted } = useIsMounted();
 
-  const userAuth = useAppSelector(selectUserAuth);
-  const { handleSubmit, control, errors } = useForm<InputData>({
+  const { handleSubmit, control, errors } = useForm<ProductInputData>({
     defaultValues: {
       title: params?.product.title || "",
       imageUrl: params?.product.imageUrl || "",
@@ -57,31 +55,23 @@ const EditProductScreen: FC = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const onValidSubmission = useCallback(
-    async (data: InputData) => {
+    async (data: ProductInputData) => {
       try {
         setIsLoading(true);
         if (params) {
           unwrapResult(
             await dispatch(
               updateProduct({
-                userAuth,
                 productId: params.product.id,
-                data: {
-                  title: data.title,
-                  imageUrl: data.imageUrl,
-                  description: data.description,
-                },
+                title: data.title,
+                imageUrl: data.imageUrl,
+                description: data.description,
               }),
             ),
           );
         } else {
           unwrapResult(
-            await dispatch(
-              addProduct({
-                userAuth,
-                data: { ...data, price: +data.price },
-              }),
-            ),
+            await dispatch(addProduct({ ...data, price: +data.price })),
           );
         }
         runInMounted(() => navigation.goBack());
@@ -93,7 +83,7 @@ const EditProductScreen: FC = () => {
         runInMounted(() => setIsLoading(false));
       }
     },
-    [dispatch, navigation, params, runInMounted, userAuth],
+    [dispatch, navigation, params, runInMounted],
   );
 
   useLayoutEffect(() => {

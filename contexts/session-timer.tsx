@@ -1,4 +1,10 @@
-import React, { FC, createContext, useState, useEffect } from "react";
+import React, {
+  FC,
+  createContext,
+  useState,
+  useEffect,
+  useCallback,
+} from "react";
 
 import { logout, selectIsAuth, selectUserAuth } from "../store/reducers/auth";
 import { clearCartState } from "../store/reducers/cart";
@@ -15,22 +21,29 @@ export const SessionTimerContext = createContext<ContextType>(undefined!);
 
 export const SessionTimerContextProvider: FC = (props) => {
   const dispatch = useAppDispatch();
+
   const isAuth = useAppSelector(selectIsAuth);
   const userAuth = useAppSelector(selectUserAuth);
-
   const [autoLogoutTimerId, setAutoLogoutTimerid] = useState<number>();
 
-  useEffect(() => () => clearTimeout(autoLogoutTimerId), [autoLogoutTimerId]);
+  useEffect(
+    () => () => {
+      clearTimeout(autoLogoutTimerId);
+      setAutoLogoutTimerid(undefined);
+    },
+    [autoLogoutTimerId],
+  );
 
-  const logoutUser = () => {
+  const logoutUser = useCallback(() => {
     dispatch(clearCartState());
     dispatch(clearOrdersState());
     dispatch(clearProductsState());
     dispatch(logout());
     clearTimeout(autoLogoutTimerId);
-  };
+    setAutoLogoutTimerid(undefined);
+  }, [autoLogoutTimerId, dispatch]);
 
-  const trySetSessionTimer = () => {
+  const trySetSessionTimer = useCallback(() => {
     if (!autoLogoutTimerId && isAuth) {
       const expireDuration = userAuth.expirationDate! - new Date().getTime();
       if (expireDuration > 0) {
@@ -40,7 +53,7 @@ export const SessionTimerContextProvider: FC = (props) => {
         logoutUser();
       }
     }
-  };
+  }, [autoLogoutTimerId, isAuth, logoutUser, userAuth.expirationDate]);
 
   return (
     <SessionTimerContext.Provider value={{ trySetSessionTimer, logoutUser }}>

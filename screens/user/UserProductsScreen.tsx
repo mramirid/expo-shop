@@ -21,7 +21,6 @@ import Colors from "../../constants/colors";
 import { deleteProduct, fetchProducts } from "../../store/thunks/products";
 import { HttpError } from "../../types/errors";
 import BodyText from "../../components/ui/text/BodyText";
-import { selectUserAuth } from "../../store/reducers/auth";
 import useIsMounted from "../../hooks/useIsMounted";
 
 const UserProductsScreen: FC = () => {
@@ -29,26 +28,24 @@ const UserProductsScreen: FC = () => {
   const navigation = useNavigation<UserProductsScreenNavProp>();
   const { runInMounted } = useIsMounted();
 
-  const userAuth = useAppSelector(selectUserAuth);
   const userProducts = useAppSelector(selectUserProducts);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<HttpError | null>(null);
 
-  const onfetchProducts = useCallback(() => {
-    setIsLoading(true);
-    const fetchProductsThunk = dispatch(fetchProducts(userAuth));
-    fetchProductsThunk
-      .then(unwrapResult)
-      .then(() => runInMounted(() => setError(null)))
-      .catch((error: HttpError) => {
-        runInMounted(() => {
-          setError(error);
-          Alert.alert("An error occurred", error.message, [{ text: "OK" }]);
-        });
-      })
-      .finally(() => runInMounted(() => setIsLoading(false)));
-    return () => fetchProductsThunk.abort();
-  }, [dispatch, runInMounted, userAuth]);
+  const onfetchProducts = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      unwrapResult(await dispatch(fetchProducts()));
+      runInMounted(() => setError(null));
+    } catch (error) {
+      runInMounted(() => {
+        setError(error);
+        Alert.alert("An error occurred", error.message, [{ text: "OK" }]);
+      });
+    } finally {
+      runInMounted(() => setIsLoading(false));
+    }
+  }, [dispatch, runInMounted]);
 
   useLayoutEffect(() => {
     onfetchProducts();
@@ -84,9 +81,7 @@ const UserProductsScreen: FC = () => {
         onPress: async () => {
           try {
             setIsLoading(true);
-            unwrapResult(
-              await dispatch(deleteProduct({ userAuth, productId })),
-            );
+            unwrapResult(await dispatch(deleteProduct({ productId })));
           } catch (error) {
             runInMounted(() => {
               Alert.alert("An error occurred", error.message, [{ text: "OK" }]);

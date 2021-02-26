@@ -1,7 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 import { FireDBErrorResBody, FirePOSTResBody } from "../../types/firebase";
-import { UserAuth } from "../../types/auth";
 import Product from "../../types/product";
 import { AppThunkAPIConfig } from "../types";
 
@@ -22,164 +21,207 @@ interface FetchProductsResult {
 
 export const fetchProducts = createAsyncThunk<
   FetchProductsResult,
-  UserAuth,
+  void,
   AppThunkAPIConfig
->("products/fetchProducts", async (payload, thunkAPI) => {
-  try {
-    const res = await fetch(
-      `${process.env.DB_URL}/products.json?auth=${payload.token}`,
-      {
-        signal: thunkAPI.signal,
-      },
-    );
+>(
+  "products/fetchProducts",
+  async (_, thunkAPI) => {
+    try {
+      const { userId, token } = thunkAPI.getState().auth;
+      const res = await fetch(
+        `${process.env.DB_URL}/products.json?auth=${token}`,
+        {
+          signal: thunkAPI.signal,
+        },
+      );
 
-    if (!res.ok) {
-      const resData: FireDBErrorResBody = await res.json();
+      if (!res.ok) {
+        const resData: FireDBErrorResBody = await res.json();
+        return thunkAPI.rejectWithValue({
+          statusCode: res.status,
+          message: resData.error || "Failed to fetch products",
+        });
+      }
+
+      await new Promise<void>((resolve) => {
+        setTimeout(() => {
+          resolve();
+        }, 15000);
+      });
+
+      const resData: FireGETProducts = await res.json();
+      const products: Product[] = [];
+      for (const productId in resData) {
+        products.push({
+          id: productId,
+          ...resData[productId],
+        });
+      }
+      return {
+        userId: userId!,
+        products,
+      };
+    } catch (_) {
       return thunkAPI.rejectWithValue({
-        statusCode: res.status,
-        message: resData.error || "Failed to fetch products",
+        statusCode: 200,
+        message: "Cannot reach the server, try again later",
       });
     }
-
-    const resData: FireGETProducts = await res.json();
-    const products: Product[] = [];
-    for (const productId in resData) {
-      products.push({
-        id: productId,
-        ...resData[productId],
-      });
-    }
-    return {
-      userId: payload.userId!,
-      products,
-    };
-  } catch (_) {
-    return thunkAPI.rejectWithValue({
-      statusCode: 200,
-      message: "Cannot reach the server, try again later",
-    });
-  }
-});
+  },
+  {
+    condition: (_, thunkAPI) => {
+      const { userId, token } = thunkAPI.getState().auth;
+      return !!userId && !!token;
+    },
+  },
+);
 
 interface AddProductPayload {
-  userAuth: UserAuth;
-  data: {
-    title: string;
-    imageUrl: string;
-    description: string;
-    price: number;
-  };
+  title: string;
+  imageUrl: string;
+  description: string;
+  price: number;
 }
 
 export const addProduct = createAsyncThunk<
   Product,
   AddProductPayload,
   AppThunkAPIConfig
->("products/addProduct", async (payload, thunkAPI) => {
-  try {
-    const res = await fetch(
-      `${process.env.DB_URL}/products.json?auth=${payload.userAuth.token}`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...payload.data,
-          ownerId: payload.userAuth.userId,
-        }),
-      },
-    );
+>(
+  "products/addProduct",
+  async (payload, thunkAPI) => {
+    try {
+      const { userId, token } = thunkAPI.getState().auth;
+      const res = await fetch(
+        `${process.env.DB_URL}/products.json?auth=${token}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            ...payload,
+            ownerId: userId,
+          }),
+        },
+      );
 
-    if (!res.ok) {
-      const resData: FireDBErrorResBody = await res.json();
+      if (!res.ok) {
+        const resData: FireDBErrorResBody = await res.json();
+        return thunkAPI.rejectWithValue({
+          statusCode: res.status,
+          message: resData.error || "Failed to add product",
+        });
+      }
+
+      const resData: FirePOSTResBody = await res.json();
+      return {
+        id: resData.name,
+        ownerId: userId!,
+        ...payload,
+      };
+    } catch (_) {
       return thunkAPI.rejectWithValue({
-        statusCode: res.status,
-        message: resData.error || "Failed to add product",
+        statusCode: 200,
+        message: "Cannot reach the server, try again later",
       });
     }
-
-    const resData: FirePOSTResBody = await res.json();
-    return {
-      id: resData.name,
-      ownerId: payload.userAuth.userId!,
-      ...payload.data,
-    };
-  } catch (_) {
-    return thunkAPI.rejectWithValue({
-      statusCode: 200,
-      message: "Cannot reach the server, try again later",
-    });
-  }
-});
+  },
+  {
+    condition: (_, thunkAPI) => {
+      const { userId, token } = thunkAPI.getState().auth;
+      return !!userId && !!token;
+    },
+  },
+);
 
 interface UpdateProductPayload {
-  userAuth: UserAuth;
   productId: string;
-  data: {
-    title: string;
-    imageUrl: string;
-    description: string;
-  };
+  title: string;
+  imageUrl: string;
+  description: string;
 }
 
 export const updateProduct = createAsyncThunk<
   UpdateProductPayload,
   UpdateProductPayload,
   AppThunkAPIConfig
->("products/updateProduct", async (payload, thunkAPI) => {
-  try {
-    const res = await fetch(
-      `${process.env.DB_URL}/products/${payload.productId}.json?auth=${payload.userAuth.token}`,
-      {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload.data),
-      },
-    );
-    if (!res.ok) {
-      const resData: FireDBErrorResBody = await res.json();
+>(
+  "products/updateProduct",
+  async (payload, thunkAPI) => {
+    try {
+      const { token } = thunkAPI.getState().auth;
+      const res = await fetch(
+        `${process.env.DB_URL}/products/${payload.productId}.json?auth=${token}`,
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            title: payload.title,
+            imageUrl: payload.imageUrl,
+            description: payload.description,
+          }),
+        },
+      );
+      if (!res.ok) {
+        const resData: FireDBErrorResBody = await res.json();
+        return thunkAPI.rejectWithValue({
+          statusCode: res.status,
+          message: resData.error || "Failed to update product",
+        });
+      }
+      return payload;
+    } catch (_) {
       return thunkAPI.rejectWithValue({
-        statusCode: res.status,
-        message: resData.error || "Failed to update product",
+        statusCode: 200,
+        message: "Cannot reach the server, try again later",
       });
     }
-    return payload;
-  } catch (_) {
-    return thunkAPI.rejectWithValue({
-      statusCode: 200,
-      message: "Cannot reach the server, try again later",
-    });
-  }
-});
+  },
+  {
+    condition: (_, thunkAPI) => {
+      const { userId, token } = thunkAPI.getState().auth;
+      return !!userId && !!token;
+    },
+  },
+);
 
 interface DeleteProductPayload {
   productId: string;
-  userAuth: UserAuth;
 }
 
 export const deleteProduct = createAsyncThunk<
   DeleteProductPayload,
   DeleteProductPayload,
   AppThunkAPIConfig
->("products/deleteProduct", async (payload, thunkAPI) => {
-  try {
-    const res = await fetch(
-      `${process.env.DB_URL}/products/${payload.productId}.json?auth=${payload.userAuth.token}`,
-      {
-        method: "DELETE",
-      },
-    );
-    if (!res.ok) {
-      const resData: FireDBErrorResBody = await res.json();
+>(
+  "products/deleteProduct",
+  async (payload, thunkAPI) => {
+    try {
+      const { token } = thunkAPI.getState().auth;
+      const res = await fetch(
+        `${process.env.DB_URL}/products/${payload.productId}.json?auth=${token}`,
+        {
+          method: "DELETE",
+        },
+      );
+      if (!res.ok) {
+        const resData: FireDBErrorResBody = await res.json();
+        return thunkAPI.rejectWithValue({
+          statusCode: res.status,
+          message: resData.error || "Failed to delete product",
+        });
+      }
+      return payload;
+    } catch (_) {
       return thunkAPI.rejectWithValue({
-        statusCode: res.status,
-        message: resData.error || "Failed to delete product",
+        statusCode: 200,
+        message: "Cannot reach the server, try again later",
       });
     }
-    return payload;
-  } catch (_) {
-    return thunkAPI.rejectWithValue({
-      statusCode: 200,
-      message: "Cannot reach the server, try again later",
-    });
-  }
-});
+  },
+  {
+    condition: (_, thunkAPI) => {
+      const { userId, token } = thunkAPI.getState().auth;
+      return !!userId && !!token;
+    },
+  },
+);

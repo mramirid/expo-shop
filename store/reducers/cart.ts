@@ -54,7 +54,7 @@ const cartSlice = createSlice({
           (item) => item.productId === payload.productId,
         );
         if (itemIndex >= 0) {
-          state.items[itemIndex].title = payload.data.title;
+          state.items[itemIndex].title = payload.title;
         }
       })
       .addCase(deleteProduct.fulfilled, (state, action) => {

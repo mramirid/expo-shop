@@ -22,7 +22,6 @@ import Colors from "../../constants/colors";
 import { fetchProducts } from "../../store/thunks/products";
 import { HttpError } from "../../types/errors";
 import BodyText from "../../components/ui/text/BodyText";
-import { selectUserAuth } from "../../store/reducers/auth";
 import useIsMounted from "../../hooks/useIsMounted";
 
 const ProductsOverviewScreen: FC = () => {
@@ -30,7 +29,6 @@ const ProductsOverviewScreen: FC = () => {
   const navigation = useNavigation<ProductsOverviewScreenNavProp>();
   const { runInMounted } = useIsMounted();
 
-  const userAuth = useAppSelector(selectUserAuth);
   const products = useAppSelector(selectProducts);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<HttpError | null>(null);
@@ -38,7 +36,7 @@ const ProductsOverviewScreen: FC = () => {
   const onfetchProducts = useCallback(async () => {
     try {
       setIsLoading(true);
-      unwrapResult(await dispatch(fetchProducts(userAuth)));
+      unwrapResult(await dispatch(fetchProducts()));
       runInMounted(() => setError(null));
     } catch (error) {
       runInMounted(() => {
@@ -48,7 +46,7 @@ const ProductsOverviewScreen: FC = () => {
     } finally {
       runInMounted(() => setIsLoading(false));
     }
-  }, [dispatch, runInMounted, userAuth]);
+  }, [dispatch, runInMounted]);
 
   useLayoutEffect(() => {
     onfetchProducts();
