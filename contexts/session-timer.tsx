@@ -8,6 +8,7 @@ import { useAppDispatch, useAppSelector } from "../store/types";
 
 interface ContextType {
   trySetSessionTimer: () => void;
+  logoutUser: () => void;
 }
 
 export const SessionTimerContext = createContext<ContextType>(undefined!);
@@ -42,7 +43,7 @@ export const SessionTimerContextProvider: FC = (props) => {
   };
 
   return (
-    <SessionTimerContext.Provider value={{ trySetSessionTimer }}>
+    <SessionTimerContext.Provider value={{ trySetSessionTimer, logoutUser }}>
       {props.children}
     </SessionTimerContext.Provider>
   );

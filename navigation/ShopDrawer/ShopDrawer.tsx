@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, useContext } from "react";
 import { View, StyleSheet, Text, Platform } from "react-native";
 import {
   createDrawerNavigator,
@@ -14,8 +14,7 @@ import Fonts from "../../constants/fonts";
 import ShopStack from "../ShopStack/ShopStack";
 import OrderStack from "../OrdersStack/OrdersStack";
 import UserProductsStack from "../UserProductsStack/UserProductsStack";
-import { useAppDispatch } from "../../store/types";
-import { logout } from "../../store/reducers/auth";
+import { SessionTimerContext } from "../../contexts/session-timer";
 
 const drawerContentStyles = StyleSheet.create({
   header: {
@@ -34,7 +33,7 @@ const drawerContentStyles = StyleSheet.create({
 const Drawer = createDrawerNavigator<ShopDrawerParamList>();
 
 const ShopDrawer: FC = () => {
-  const dispatch = useAppDispatch();
+  const { logoutUser } = useContext(SessionTimerContext);
   return (
     <Drawer.Navigator
       drawerContent={(props) => (
@@ -54,7 +53,7 @@ const ShopDrawer: FC = () => {
                 />
               )}
               label="Logout"
-              onPress={() => dispatch(logout())}
+              onPress={logoutUser}
             />
           </DrawerContentScrollView>
         </>

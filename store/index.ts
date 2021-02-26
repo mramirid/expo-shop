@@ -1,7 +1,5 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { configureStore, getDefaultMiddleware } from "@reduxjs/toolkit";
 import {
-  persistReducer,
   FLUSH,
   REHYDRATE,
   PAUSE,
@@ -14,15 +12,7 @@ import {
 import rootReducer from "./reducers/rootReducer";
 
 export const store = configureStore({
-  reducer: persistReducer(
-    {
-      key: "root",
-      version: 1,
-      storage: AsyncStorage,
-      whitelist: ["auth", "cart"],
-    },
-    rootReducer,
-  ),
+  reducer: rootReducer,
   middleware: getDefaultMiddleware({
     serializableCheck: {
       ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
