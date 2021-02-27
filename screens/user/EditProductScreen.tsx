@@ -1,6 +1,8 @@
 import { ErrorMessage } from '@hookform/error-message';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { unwrapResult } from '@reduxjs/toolkit';
+import * as Notifications from 'expo-notifications';
+import * as Permissions from 'expo-permissions';
 import React, { FC, useCallback, useEffect, useLayoutEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { View, ScrollView, TextInput, StyleSheet, Alert, ActivityIndicator } from 'react-native';
@@ -45,6 +47,13 @@ const EditProductScreen: FC = () => {
     async (data: ProductInputData) => {
       try {
         setIsLoading(true);
+
+        const permission = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+        if (!permission.granted) {
+          throw new Error('You need to grant notification permission to use this app');
+        }
+        const expoPushToken = await Notifications.getExpoPushTokenAsync();
+
         if (params) {
           unwrapResult(
             await dispatch(
@@ -57,7 +66,15 @@ const EditProductScreen: FC = () => {
             )
           );
         } else {
-          unwrapResult(await dispatch(addProduct({ ...data, price: +data.price })));
+          unwrapResult(
+            await dispatch(
+              addProduct({
+                ...data,
+                price: +data.price,
+                ownerPushToken: expoPushToken.data,
+              })
+            )
+          );
         }
         runInMounted(() => navigation.goBack());
       } catch (error) {

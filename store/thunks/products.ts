@@ -1,17 +1,11 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
 import { FireDBErrorResBody, FirePOSTResBody } from '../../types/firebase';
-import Product from '../../types/product';
+import Product, { ProductData } from '../../types/product';
 import { AppThunkAPIConfig } from '../types';
 
 interface FireGETProducts {
-  [productId: string]: {
-    ownerId: string;
-    title: string;
-    imageUrl: string;
-    description: string;
-    price: number;
-  };
+  [productId: string]: ProductData;
 }
 
 interface FetchProductsResult {
@@ -68,6 +62,7 @@ interface AddProductPayload {
   imageUrl: string;
   description: string;
   price: number;
+  ownerPushToken: string;
 }
 
 export const addProduct = createAsyncThunk<Product, AddProductPayload, AppThunkAPIConfig>(
@@ -80,7 +75,7 @@ export const addProduct = createAsyncThunk<Product, AddProductPayload, AppThunkA
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...payload,
-          ownerId: userId,
+          ownerId: userId!,
         }),
       });
 
