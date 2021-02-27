@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import Cart from '../../types/cart';
-import Product from '../../types/product';
+import Cart from '../../global-types/cart';
+import Product from '../../global-types/product';
 import { addOrder } from '../thunks/orders';
 import { deleteProduct, updateProduct } from '../thunks/products';
 import { RootState } from '../types';
@@ -15,19 +15,20 @@ const cartSlice = createSlice({
   name: 'cart',
   initialState,
   reducers: {
-    addToCart(state, action: PayloadAction<Product>) {
-      const itemIndex = state.items.findIndex((item) => item.productId === action.payload.id);
+    addToCart(state, { payload }: PayloadAction<Product>) {
+      const itemIndex = state.items.findIndex((item) => item.productId === payload.id);
       if (itemIndex >= 0) {
         state.items[itemIndex].qty++;
       } else {
         state.items.push({
-          productId: action.payload.id,
-          title: action.payload.title,
-          price: action.payload.price,
+          productId: payload.id,
+          title: payload.title,
+          price: payload.price,
+          ownerPushToken: payload.ownerPushToken,
           qty: 1,
         });
       }
-      state.totalAmount += action.payload.price;
+      state.totalAmount += payload.price;
     },
     removeItem(state, action: PayloadAction<string>) {
       const itemIndex = state.items.findIndex((item) => item.productId === action.payload);

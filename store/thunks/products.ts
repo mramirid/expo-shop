@@ -1,7 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
-import { FireDBErrorResBody, FirePOSTResBody } from '../../types/firebase';
-import Product, { ProductData } from '../../types/product';
+import { FireDBErrorResBody, FirePOSTResBody } from '../../global-types/firebase';
+import Product, { ProductData } from '../../global-types/product';
 import { AppThunkAPIConfig } from '../types';
 
 interface FireGETProducts {

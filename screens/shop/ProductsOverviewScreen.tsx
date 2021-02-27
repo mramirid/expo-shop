@@ -16,13 +16,13 @@ import ProductItem from '../../components/shop/ProductItem';
 import AppHeaderButton from '../../components/ui/AppHeaderButton';
 import BodyText from '../../components/ui/text/BodyText';
 import Colors from '../../constants/colors';
+import { HttpError } from '../../global-types/errors';
 import useIsMounted from '../../hooks/useIsMounted';
 import { ProductsOverviewScreenNavProp } from '../../navigation/ShopStack/types';
 import { addToCart } from '../../store/reducers/cart';
 import { selectProducts } from '../../store/reducers/products';
 import { fetchProducts } from '../../store/thunks/products';
 import { useAppDispatch, useAppSelector } from '../../store/types';
-import { HttpError } from '../../types/errors';
 
 const ProductsOverviewScreen: FC = () => {
   const dispatch = useAppDispatch();

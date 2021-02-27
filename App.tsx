@@ -1,6 +1,7 @@
 import 'react-native-gesture-handler';
 import AppLoading from 'expo-app-loading';
 import { useFonts } from 'expo-font';
+import * as Notifications from 'expo-notifications';
 import { StatusBar } from 'expo-status-bar';
 import React, { FC } from 'react';
 import { ActivityIndicator } from 'react-native';
@@ -15,6 +16,14 @@ import AppNavigator from './navigation/AppNavigator';
 import { store, persistor } from './store';
 
 enableScreens();
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: true,
+  }),
+});
 
 const App: FC = () => {
   const [isFontsLoaded] = useFonts({

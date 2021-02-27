@@ -12,7 +12,7 @@ import Colors from '../../constants/colors';
 import useIsMounted from '../../hooks/useIsMounted';
 import { CartScreenNavProp } from '../../navigation/ShopStack/types';
 import { removeItem, selectCartItems, selectCartTotalAmount } from '../../store/reducers/cart';
-import { addOrder } from '../../store/thunks/orders';
+import { addOrder, pushNotifToProductOwners } from '../../store/thunks/orders';
 import { useAppDispatch, useAppSelector } from '../../store/types';
 
 const CartScreen: FC = () => {
@@ -31,7 +31,7 @@ const CartScreen: FC = () => {
   const onOrder = useCallback(async () => {
     try {
       setIsLoading(true);
-      unwrapResult(
+      const order = unwrapResult(
         await dispatch(
           addOrder({
             items: cartItems,
@@ -39,6 +39,7 @@ const CartScreen: FC = () => {
           })
         )
       );
+      await dispatch(pushNotifToProductOwners(order));
     } catch (error) {
       runInMounted(() => {
         Alert.alert('An error occurred', error.message, [{ text: 'OK' }]);

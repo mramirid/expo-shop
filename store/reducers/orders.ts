@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-import Order from '../../types/order';
+import Order from '../../global-types/order';
 import { addOrder, fetchOrders } from '../thunks/orders';
 import { RootState } from '../types';
 

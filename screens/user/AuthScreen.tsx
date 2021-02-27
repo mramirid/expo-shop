@@ -18,13 +18,13 @@ import AppCard from '../../components/ui/AppCard';
 import BodyText from '../../components/ui/text/BodyText';
 import HeadingText from '../../components/ui/text/HeadingText';
 import Colors from '../../constants/colors';
+import { AuthInputPayload } from '../../global-types/auth';
 import { AuthScreenNavProp } from '../../navigation/AuthStack/types';
 import { clearCartState } from '../../store/reducers/cart';
 import { clearOrdersState } from '../../store/reducers/orders';
 import { clearProductsState } from '../../store/reducers/products';
 import { signIn, signUp } from '../../store/thunks/auth';
 import { useAppDispatch } from '../../store/types';
-import { AuthInputPayload } from '../../types/auth';
 
 interface InputData {
   email: string;

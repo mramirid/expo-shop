@@ -1,7 +1,8 @@
 export interface CartItem {
-  readonly productId: string;
+  productId: string;
+  ownerPushToken: string;
   title: string;
-  readonly price: number;
+  price: number;
   qty: number;
 }
 

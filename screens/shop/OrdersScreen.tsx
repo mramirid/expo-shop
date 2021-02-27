@@ -7,12 +7,12 @@ import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import OrderItem from '../../components/shop/OrderItem';
 import AppHeaderButton from '../../components/ui/AppHeaderButton';
 import BodyText from '../../components/ui/text/BodyText';
+import { HttpError } from '../../global-types/errors';
 import useIsMounted from '../../hooks/useIsMounted';
 import { OrderScreenNavProp } from '../../navigation/OrdersStack/types';
 import { selectOrders } from '../../store/reducers/orders';
 import { fetchOrders } from '../../store/thunks/orders';
 import { useAppDispatch, useAppSelector } from '../../store/types';
-import { HttpError } from '../../types/errors';
 
 const OrdersScreen: FC = () => {
   const dispatch = useAppDispatch();

@@ -1,6 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
-import { AuthInputPayload, FireAuthResBody } from '../../types/auth';
+import { AuthInputPayload, FireAuthResBody } from '../../global-types/auth';
 import { AppThunkAPIConfig } from '../types';
 
 interface FireAuthErrorResBody {

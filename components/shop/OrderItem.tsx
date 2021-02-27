@@ -3,7 +3,7 @@ import React, { FC, useState } from 'react';
 import { View, StyleSheet, Button, ViewStyle } from 'react-native';
 
 import Colors from '../../constants/colors';
-import Order from '../../types/order';
+import Order from '../../global-types/order';
 import AppCard from '../ui/AppCard';
 import BodyText from '../ui/text/BodyText';
 import HeadingText from '../ui/text/HeadingText';

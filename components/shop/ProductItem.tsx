@@ -11,7 +11,7 @@ import {
   ViewStyle,
 } from 'react-native';
 
-import Product from '../../types/product';
+import Product from '../../global-types/product';
 import AppCard from '../ui/AppCard';
 import BodyText from '../ui/text/BodyText';
 import HeadingText from '../ui/text/HeadingText';

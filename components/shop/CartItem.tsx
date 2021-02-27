@@ -3,7 +3,7 @@ import React, { FC } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
-import { CartItem as ICartItem } from '../../types/cart';
+import { CartItem as ICartItem } from '../../global-types/cart';
 import BodyText from '../ui/text/BodyText';
 import HeadingText from '../ui/text/HeadingText';
 

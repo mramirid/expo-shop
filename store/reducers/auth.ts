@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-import { UserAuth } from '../../types/auth';
+import { UserAuth } from '../../global-types/auth';
 import { signIn, signUp } from '../thunks/auth';
 import { RootState } from '../types';
 

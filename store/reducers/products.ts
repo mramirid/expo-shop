@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-import Product from '../../types/product';
+import Product from '../../global-types/product';
 import { deleteProduct, fetchProducts, updateProduct, addProduct } from '../thunks/products';
 import { RootState } from '../types';
 

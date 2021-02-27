@@ -1,8 +1,8 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
-import Cart from '../../types/cart';
-import { FireDBErrorResBody, FirePOSTResBody } from '../../types/firebase';
-import Order, { OrderData } from '../../types/order';
+import Cart from '../../global-types/cart';
+import { FireDBErrorResBody, FirePOSTResBody } from '../../global-types/firebase';
+import Order, { OrderData } from '../../global-types/order';
 import { AppThunkAPIConfig } from '../types';
 
 interface FireGETOrders {
@@ -88,5 +88,32 @@ export const addOrder = createAsyncThunk<Order, Cart, AppThunkAPIConfig>(
       const { userId, token } = thunkAPI.getState().auth;
       return !!userId && !!token;
     },
+  }
+);
+
+export const pushNotifToProductOwners = createAsyncThunk<void, Order, AppThunkAPIConfig>(
+  'orders/pushNotifToProductOwners',
+  async (payload) => {
+    await Promise.allSettled(
+      payload.items.map((cartItem) => {
+        return fetch('https://exp.host/--/api/v2/push/send', {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Accept-Encoding': 'gzip, deflate',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            to: cartItem.ownerPushToken,
+            title: 'Order was Placed!',
+            body: cartItem.title,
+            data: {
+              quantity: cartItem.qty,
+              price: cartItem.price,
+            },
+          }),
+        });
+      })
+    );
   }
 );

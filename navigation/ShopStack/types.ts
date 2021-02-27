@@ -2,7 +2,7 @@ import { DrawerNavigationProp } from '@react-navigation/drawer';
 import { CompositeNavigationProp, RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 
-import Product from '../../types/product';
+import Product from '../../global-types/product';
 import { ShopDrawerParamList } from '../ShopDrawer/types';
 
 export type ShopStackParamList = {
