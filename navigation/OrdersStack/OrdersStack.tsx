@@ -1,9 +1,9 @@
-import React, { FC } from "react";
-import { createStackNavigator } from "@react-navigation/stack";
+import { createStackNavigator } from '@react-navigation/stack';
+import React, { FC } from 'react';
 
-import { defaultStackScreenOptions } from "../contants";
-import { OrdersStackParamList } from "./types";
-import OrdersScreen from "../../screens/shop/OrdersScreen";
+import OrdersScreen from '../../screens/shop/OrdersScreen';
+import { defaultStackScreenOptions } from '../contants';
+import { OrdersStackParamList } from './types';
 
 const Stack = createStackNavigator<OrdersStackParamList>();
 

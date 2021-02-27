@@ -1,11 +1,11 @@
-import React, { FC } from "react";
-import { View, StyleSheet } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons } from '@expo/vector-icons';
+import React, { FC } from 'react';
+import { View, StyleSheet } from 'react-native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
-import { CartItem as ICartItem } from "../../types/cart";
-import HeadingText from "../ui/text/HeadingText";
-import BodyText from "../ui/text/BodyText";
+import { CartItem as ICartItem } from '../../types/cart';
+import BodyText from '../ui/text/BodyText';
+import HeadingText from '../ui/text/HeadingText';
 
 interface CartItemProps {
   cartItem: ICartItem;
@@ -36,23 +36,23 @@ const CartItem: FC<CartItemProps> = (props) => (
 const styles = StyleSheet.create({
   cartItem: {
     padding: 10,
-    backgroundColor: "white",
-    flexDirection: "row",
-    justifyContent: "space-between",
+    backgroundColor: 'white',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   itemInfo1: {
-    width: "50%",
-    flexDirection: "row",
-    alignItems: "center",
+    width: '50%',
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   itemInfo2: {
-    width: "50%",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "flex-end",
+    width: '50%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
   },
   qty: {
-    color: "#888",
+    color: '#888',
     marginRight: 5,
   },
   headingText: {

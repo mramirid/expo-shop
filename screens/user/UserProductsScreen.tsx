@@ -1,4 +1,6 @@
-import React, { FC, useCallback, useLayoutEffect, useState } from "react";
+import { useNavigation } from '@react-navigation/native';
+import { unwrapResult } from '@reduxjs/toolkit';
+import React, { FC, useCallback, useLayoutEffect, useState } from 'react';
 import {
   View,
   Button,
@@ -7,21 +9,19 @@ import {
   Alert,
   ScrollView,
   RefreshControl,
-} from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import { HeaderButtons, Item } from "react-navigation-header-buttons";
-import { unwrapResult } from "@reduxjs/toolkit";
+} from 'react-native';
+import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 
-import { UserProductsScreenNavProp } from "../../navigation/UserProductsStack/types";
-import { selectUserProducts } from "../../store/reducers/products";
-import { useAppDispatch, useAppSelector } from "../../store/types";
-import ProductItem from "../../components/shop/ProductItem";
-import AppHeaderButton from "../../components/ui/AppHeaderButton";
-import Colors from "../../constants/colors";
-import { deleteProduct, fetchProducts } from "../../store/thunks/products";
-import { HttpError } from "../../types/errors";
-import BodyText from "../../components/ui/text/BodyText";
-import useIsMounted from "../../hooks/useIsMounted";
+import ProductItem from '../../components/shop/ProductItem';
+import AppHeaderButton from '../../components/ui/AppHeaderButton';
+import BodyText from '../../components/ui/text/BodyText';
+import Colors from '../../constants/colors';
+import useIsMounted from '../../hooks/useIsMounted';
+import { UserProductsScreenNavProp } from '../../navigation/UserProductsStack/types';
+import { selectUserProducts } from '../../store/reducers/products';
+import { deleteProduct, fetchProducts } from '../../store/thunks/products';
+import { useAppDispatch, useAppSelector } from '../../store/types';
+import { HttpError } from '../../types/errors';
 
 const UserProductsScreen: FC = () => {
   const dispatch = useAppDispatch();
@@ -40,7 +40,7 @@ const UserProductsScreen: FC = () => {
     } catch (error) {
       runInMounted(() => {
         setError(error);
-        Alert.alert("An error occurred", error.message, [{ text: "OK" }]);
+        Alert.alert('An error occurred', error.message, [{ text: 'OK' }]);
       });
     } finally {
       runInMounted(() => setIsLoading(false));
@@ -50,14 +50,10 @@ const UserProductsScreen: FC = () => {
   useLayoutEffect(() => {
     onfetchProducts();
     navigation.setOptions({
-      headerTitle: "Your Products",
+      headerTitle: 'Your Products',
       headerLeft: () => (
         <HeaderButtons HeaderButtonComponent={AppHeaderButton}>
-          <Item
-            title="Menu"
-            iconName="menu"
-            onPress={navigation.toggleDrawer}
-          />
+          <Item title="Menu" iconName="menu" onPress={navigation.toggleDrawer} />
         </HeaderButtons>
       ),
       headerRight: () => (
@@ -65,7 +61,7 @@ const UserProductsScreen: FC = () => {
           <Item
             title="Create Product"
             iconName="create"
-            onPress={() => navigation.navigate("EditProductScreen")}
+            onPress={() => navigation.navigate('EditProductScreen')}
           />
         </HeaderButtons>
       ),
@@ -73,18 +69,18 @@ const UserProductsScreen: FC = () => {
   }, [navigation, onfetchProducts]);
 
   const confirmDeleteProduct = (productId: string) => {
-    Alert.alert("Are you sure?", "Do you really want to delete this item?", [
-      { text: "NO", style: "cancel" },
+    Alert.alert('Are you sure?', 'Do you really want to delete this item?', [
+      { text: 'NO', style: 'cancel' },
       {
-        text: "YES",
-        style: "destructive",
+        text: 'YES',
+        style: 'destructive',
         onPress: async () => {
           try {
             setIsLoading(true);
             unwrapResult(await dispatch(deleteProduct({ productId })));
           } catch (error) {
             runInMounted(() => {
-              Alert.alert("An error occurred", error.message, [{ text: "OK" }]);
+              Alert.alert('An error occurred', error.message, [{ text: 'OK' }]);
             });
           } finally {
             runInMounted(() => setIsLoading(false));
@@ -98,9 +94,7 @@ const UserProductsScreen: FC = () => {
     return (
       <ScrollView
         contentContainerStyle={styles.screen1}
-        refreshControl={
-          <RefreshControl refreshing={isLoading} onRefresh={onfetchProducts} />
-        }>
+        refreshControl={<RefreshControl refreshing={isLoading} onRefresh={onfetchProducts} />}>
         <BodyText>{error.message}</BodyText>
       </ScrollView>
     );
@@ -108,9 +102,7 @@ const UserProductsScreen: FC = () => {
     return (
       <ScrollView
         contentContainerStyle={styles.screen1}
-        refreshControl={
-          <RefreshControl refreshing={isLoading} onRefresh={onfetchProducts} />
-        }>
+        refreshControl={<RefreshControl refreshing={isLoading} onRefresh={onfetchProducts} />}>
         <BodyText>No products found. Maybe start adding some!</BodyText>
       </ScrollView>
     );
@@ -127,14 +119,14 @@ const UserProductsScreen: FC = () => {
           style={styles.productItems}
           product={item}
           onCardTap={() => {
-            navigation.navigate("EditProductScreen", { product: item });
+            navigation.navigate('EditProductScreen', { product: item });
           }}>
           <View style={styles.actionButtons}>
             <Button
               color={Colors.Accent}
               title="EDIT"
               onPress={() => {
-                navigation.navigate("EditProductScreen", { product: item });
+                navigation.navigate('EditProductScreen', { product: item });
               }}
             />
           </View>
@@ -154,8 +146,8 @@ const UserProductsScreen: FC = () => {
 const styles = StyleSheet.create({
   screen1: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   screen2: {
     paddingTop: 20,
@@ -165,7 +157,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   actionButtons: {
-    width: "30%",
+    width: '30%',
   },
 });
 

@@ -1,28 +1,26 @@
-import { createAsyncThunk } from "@reduxjs/toolkit";
+import { createAsyncThunk } from '@reduxjs/toolkit';
 
-import { FireDBErrorResBody, FirePOSTResBody } from "../../types/firebase";
-import Order, { OrderData } from "../../types/order";
-import Cart from "../../types/cart";
-import { AppThunkAPIConfig } from "../types";
+import Cart from '../../types/cart';
+import { FireDBErrorResBody, FirePOSTResBody } from '../../types/firebase';
+import Order, { OrderData } from '../../types/order';
+import { AppThunkAPIConfig } from '../types';
 
 interface FireGETOrders {
   [orderId: string]: OrderData;
 }
 
 export const fetchOrders = createAsyncThunk<Order[], void, AppThunkAPIConfig>(
-  "orders/fetchOrders",
+  'orders/fetchOrders',
   async (_, thunkAPI) => {
     try {
       const { userId, token } = thunkAPI.getState().auth;
-      const res = await fetch(
-        `${process.env.DB_URL}/orders/${userId}.json?auth=${token}`,
-      );
+      const res = await fetch(`${process.env.DB_URL}/orders/${userId}.json?auth=${token}`);
 
       if (!res.ok) {
         const resData: FireDBErrorResBody = await res.json();
         return thunkAPI.rejectWithValue({
           statusCode: res.status,
-          message: resData.error || "Failed to fetch orders",
+          message: resData.error || 'Failed to fetch orders',
         });
       }
 
@@ -38,7 +36,7 @@ export const fetchOrders = createAsyncThunk<Order[], void, AppThunkAPIConfig>(
     } catch (_) {
       return thunkAPI.rejectWithValue({
         statusCode: 200,
-        message: "Cannot reach the server, try again later",
+        message: 'Cannot reach the server, try again later',
       });
     }
   },
@@ -47,11 +45,11 @@ export const fetchOrders = createAsyncThunk<Order[], void, AppThunkAPIConfig>(
       const { userId, token } = thunkAPI.getState().auth;
       return !!userId && !!token;
     },
-  },
+  }
 );
 
 export const addOrder = createAsyncThunk<Order, Cart, AppThunkAPIConfig>(
-  "orders/addOrder",
+  'orders/addOrder',
   async (payload, thunkAPI) => {
     try {
       const { userId, token } = thunkAPI.getState().auth;
@@ -59,20 +57,17 @@ export const addOrder = createAsyncThunk<Order, Cart, AppThunkAPIConfig>(
         ...payload,
         date: new Date().getTime(),
       };
-      const res = await fetch(
-        `${process.env.DB_URL}/orders/${userId}.json?auth=${token}`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(newOrder),
-        },
-      );
+      const res = await fetch(`${process.env.DB_URL}/orders/${userId}.json?auth=${token}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newOrder),
+      });
 
       if (!res.ok) {
         const resData: FireDBErrorResBody = await res.json();
         return thunkAPI.rejectWithValue({
           statusCode: res.status,
-          message: resData.error || "Failed to add orders",
+          message: resData.error || 'Failed to add orders',
         });
       }
 
@@ -84,7 +79,7 @@ export const addOrder = createAsyncThunk<Order, Cart, AppThunkAPIConfig>(
     } catch (_) {
       return thunkAPI.rejectWithValue({
         statusCode: 200,
-        message: "Cannot reach the server, try again later",
+        message: 'Cannot reach the server, try again later',
       });
     }
   },
@@ -93,5 +88,5 @@ export const addOrder = createAsyncThunk<Order, Cart, AppThunkAPIConfig>(
       const { userId, token } = thunkAPI.getState().auth;
       return !!userId && !!token;
     },
-  },
+  }
 );

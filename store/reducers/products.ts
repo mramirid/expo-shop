@@ -1,13 +1,8 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice } from '@reduxjs/toolkit';
 
-import { RootState } from "../types";
-import Product from "../../types/product";
-import {
-  deleteProduct,
-  fetchProducts,
-  updateProduct,
-  addProduct,
-} from "../thunks/products";
+import Product from '../../types/product';
+import { deleteProduct, fetchProducts, updateProduct, addProduct } from '../thunks/products';
+import { RootState } from '../types';
 
 interface ProductsState {
   products: Product[];
@@ -20,7 +15,7 @@ const initialState: ProductsState = {
 };
 
 const productsSlice = createSlice({
-  name: "products",
+  name: 'products',
   initialState,
   reducers: {
     clearProductsState(state) {
@@ -33,7 +28,7 @@ const productsSlice = createSlice({
       .addCase(fetchProducts.fulfilled, (state, { payload }) => {
         state.products = payload.products;
         state.userProducts = payload.products.filter(
-          (product) => product.ownerId === payload.userId,
+          (product) => product.ownerId === payload.userId
         );
       })
       .addCase(addProduct.fulfilled, (state, action) => {
@@ -41,9 +36,7 @@ const productsSlice = createSlice({
         state.userProducts.push(action.payload);
       })
       .addCase(updateProduct.fulfilled, (state, { payload }) => {
-        let itemIndex = state.products.findIndex(
-          (product) => product.id === payload.productId,
-        );
+        let itemIndex = state.products.findIndex((product) => product.id === payload.productId);
         state.products[itemIndex] = {
           ...state.products[itemIndex],
           title: payload.title,
@@ -51,9 +44,7 @@ const productsSlice = createSlice({
           description: payload.description,
         };
 
-        itemIndex = state.userProducts.findIndex(
-          (product) => product.id === payload.productId,
-        );
+        itemIndex = state.userProducts.findIndex((product) => product.id === payload.productId);
         state.userProducts[itemIndex] = {
           ...state.userProducts[itemIndex],
           title: payload.title,
@@ -63,10 +54,10 @@ const productsSlice = createSlice({
       })
       .addCase(deleteProduct.fulfilled, (state, action) => {
         state.userProducts = state.userProducts.filter(
-          (userProduct) => userProduct.id !== action.payload.productId,
+          (userProduct) => userProduct.id !== action.payload.productId
         );
         state.products = state.products.filter(
-          (product) => product.id !== action.payload.productId,
+          (product) => product.id !== action.payload.productId
         );
       });
   },

@@ -1,8 +1,8 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice } from '@reduxjs/toolkit';
 
-import { RootState } from "../types";
-import { signIn, signUp } from "../thunks/auth";
-import { UserAuth } from "../../types/auth";
+import { UserAuth } from '../../types/auth';
+import { signIn, signUp } from '../thunks/auth';
+import { RootState } from '../types';
 
 const initialState: UserAuth = {
   userId: null,
@@ -11,7 +11,7 @@ const initialState: UserAuth = {
 };
 
 const authSlice = createSlice({
-  name: "auth",
+  name: 'auth',
   initialState,
   reducers: {
     logout(state) {
@@ -38,9 +38,7 @@ const authSlice = createSlice({
 
 export const selectUserAuth = (state: RootState) => state.auth;
 export const selectIsAuth = (state: RootState) => {
-  return (
-    !!state.auth.token && !!state.auth.userId && !!state.auth.expirationDate
-  );
+  return !!state.auth.token && !!state.auth.userId && !!state.auth.expirationDate;
 };
 
 export const { logout } = authSlice.actions;

@@ -1,29 +1,19 @@
-import React, { FC, useCallback, useLayoutEffect, useState } from "react";
-import {
-  View,
-  StyleSheet,
-  Button,
-  Alert,
-  ActivityIndicator,
-} from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import { FlatList } from "react-native-gesture-handler";
-import { unwrapResult } from "@reduxjs/toolkit";
+import { useNavigation } from '@react-navigation/native';
+import { unwrapResult } from '@reduxjs/toolkit';
+import React, { FC, useCallback, useLayoutEffect, useState } from 'react';
+import { View, StyleSheet, Button, Alert, ActivityIndicator } from 'react-native';
+import { FlatList } from 'react-native-gesture-handler';
 
-import AppCard from "../../components/ui/AppCard";
-import BodyText from "../../components/ui/text/BodyText";
-import HeadingText from "../../components/ui/text/HeadingText";
-import Colors from "../../constants/colors";
-import useIsMounted from "../../hooks/useIsMounted";
-import CartItem from "../../components/shop/CartItem";
-import { CartScreenNavProp } from "../../navigation/ShopStack/types";
-import { useAppDispatch, useAppSelector } from "../../store/types";
-import { addOrder } from "../../store/thunks/orders";
-import {
-  removeItem,
-  selectCartItems,
-  selectCartTotalAmount,
-} from "../../store/reducers/cart";
+import CartItem from '../../components/shop/CartItem';
+import AppCard from '../../components/ui/AppCard';
+import BodyText from '../../components/ui/text/BodyText';
+import HeadingText from '../../components/ui/text/HeadingText';
+import Colors from '../../constants/colors';
+import useIsMounted from '../../hooks/useIsMounted';
+import { CartScreenNavProp } from '../../navigation/ShopStack/types';
+import { removeItem, selectCartItems, selectCartTotalAmount } from '../../store/reducers/cart';
+import { addOrder } from '../../store/thunks/orders';
+import { useAppDispatch, useAppSelector } from '../../store/types';
 
 const CartScreen: FC = () => {
   const dispatch = useAppDispatch();
@@ -35,7 +25,7 @@ const CartScreen: FC = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   useLayoutEffect(() => {
-    navigation.setOptions({ headerTitle: "Your Cart" });
+    navigation.setOptions({ headerTitle: 'Your Cart' });
   }, [navigation]);
 
   const onOrder = useCallback(async () => {
@@ -46,12 +36,12 @@ const CartScreen: FC = () => {
           addOrder({
             items: cartItems,
             totalAmount: cartTotalAmount,
-          }),
-        ),
+          })
+        )
       );
     } catch (error) {
       runInMounted(() => {
-        Alert.alert("An error occurred", error.message, [{ text: "OK" }]);
+        Alert.alert('An error occurred', error.message, [{ text: 'OK' }]);
       });
     } finally {
       runInMounted(() => setIsLoading(false));
@@ -62,10 +52,8 @@ const CartScreen: FC = () => {
     <View style={styles.screen2}>
       <AppCard style={styles.summary}>
         <HeadingText>
-          Total:{" "}
-          <BodyText style={styles.summaryAmount}>
-            ${Math.abs(cartTotalAmount).toFixed(2)}
-          </BodyText>
+          Total:{' '}
+          <BodyText style={styles.summaryAmount}>${Math.abs(cartTotalAmount).toFixed(2)}</BodyText>
         </HeadingText>
         {isLoading ? (
           <ActivityIndicator size="small" color={Colors.Primary} />
@@ -83,10 +71,7 @@ const CartScreen: FC = () => {
           data={cartItems}
           keyExtractor={(item) => item.productId}
           renderItem={({ item }) => (
-            <CartItem
-              cartItem={item}
-              onRemove={() => dispatch(removeItem(item.productId))}
-            />
+            <CartItem cartItem={item} onRemove={() => dispatch(removeItem(item.productId))} />
           )}
         />
       ) : (
@@ -101,8 +86,8 @@ const CartScreen: FC = () => {
 const styles = StyleSheet.create({
   screen1: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   screen2: {
     flex: 1,
@@ -110,9 +95,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   summary: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     marginBottom: 20,
     padding: 10,
   },
@@ -120,8 +105,8 @@ const styles = StyleSheet.create({
     color: Colors.Primary,
   },
   emptyList: {
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

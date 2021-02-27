@@ -1,10 +1,10 @@
-import React, { FC } from "react";
-import { createStackNavigator } from "@react-navigation/stack";
+import { createStackNavigator } from '@react-navigation/stack';
+import React, { FC } from 'react';
 
-import { defaultStackScreenOptions } from "../contants";
-import { UserProductsStackParamList } from "./types";
-import UserProductsScreen from "../../screens/user/UserProductsScreen";
-import EditProductScreen from "../../screens/user/EditProductScreen";
+import EditProductScreen from '../../screens/user/EditProductScreen';
+import UserProductsScreen from '../../screens/user/UserProductsScreen';
+import { defaultStackScreenOptions } from '../contants';
+import { UserProductsStackParamList } from './types';
 
 const Stack = createStackNavigator<UserProductsStackParamList>();
 

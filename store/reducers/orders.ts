@@ -1,8 +1,8 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice } from '@reduxjs/toolkit';
 
-import { RootState } from "../types";
-import Order from "../../types/order";
-import { addOrder, fetchOrders } from "../thunks/orders";
+import Order from '../../types/order';
+import { addOrder, fetchOrders } from '../thunks/orders';
+import { RootState } from '../types';
 
 interface OrdersState {
   items: Order[];
@@ -13,7 +13,7 @@ const initialState: OrdersState = {
 };
 
 const ordersSlice = createSlice({
-  name: "orders",
+  name: 'orders',
   initialState,
   reducers: {
     clearOrdersState(state) {

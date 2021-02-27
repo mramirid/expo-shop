@@ -1,31 +1,31 @@
-import { combineReducers } from "@reduxjs/toolkit";
-import { persistReducer } from "redux-persist";
-import createSecureStore from "redux-persist-expo-securestore";
-import ExpoFileSystemStorage from "redux-persist-expo-filesystem";
+import { combineReducers } from '@reduxjs/toolkit';
+import { persistReducer } from 'redux-persist';
+import ExpoFileSystemStorage from 'redux-persist-expo-filesystem';
+import createSecureStore from 'redux-persist-expo-securestore';
 
-import authReducer from "./auth";
-import productsReducer from "./products";
-import cartReducer from "./cart";
-import ordersReducer from "./orders";
+import authReducer from './auth';
+import cartReducer from './cart';
+import ordersReducer from './orders';
+import productsReducer from './products';
 
 const secureStorage = createSecureStore();
 
 const rootReducer = combineReducers({
   auth: persistReducer(
     {
-      key: "auth",
+      key: 'auth',
       version: 2,
       storage: secureStorage,
     },
-    authReducer,
+    authReducer
   ),
   cart: persistReducer(
     {
-      key: "cart",
+      key: 'cart',
       version: 2,
       storage: ExpoFileSystemStorage,
     },
-    cartReducer,
+    cartReducer
   ),
   products: productsReducer,
   orders: ordersReducer,

@@ -1,8 +1,8 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet } from 'react-native';
 
 enum Fonts {
-  OpenSansRegular = "OpenSans-Regular",
-  OpenSansBold = "OpenSans-Bold",
+  OpenSansRegular = 'OpenSans-Regular',
+  OpenSansBold = 'OpenSans-Bold',
 }
 
 export const fontStyles = StyleSheet.create({

@@ -1,32 +1,32 @@
-import React, { FC, useContext } from "react";
-import { View, StyleSheet, Text, Platform } from "react-native";
+import { Ionicons } from '@expo/vector-icons';
 import {
   createDrawerNavigator,
   DrawerContentScrollView,
   DrawerItem,
   DrawerItemList,
-} from "@react-navigation/drawer";
-import { Ionicons } from "@expo/vector-icons";
+} from '@react-navigation/drawer';
+import React, { FC, useContext } from 'react';
+import { View, StyleSheet, Text, Platform } from 'react-native';
 
-import { ShopDrawerParamList } from "./types";
-import Colors from "../../constants/colors";
-import Fonts from "../../constants/fonts";
-import ShopStack from "../ShopStack/ShopStack";
-import OrderStack from "../OrdersStack/OrdersStack";
-import UserProductsStack from "../UserProductsStack/UserProductsStack";
-import { SessionTimerContext } from "../../contexts/session-timer";
+import Colors from '../../constants/colors';
+import Fonts from '../../constants/fonts';
+import { SessionTimerContext } from '../../contexts/session-timer';
+import OrderStack from '../OrdersStack/OrdersStack';
+import ShopStack from '../ShopStack/ShopStack';
+import UserProductsStack from '../UserProductsStack/UserProductsStack';
+import { ShopDrawerParamList } from './types';
 
 const drawerContentStyles = StyleSheet.create({
   header: {
     backgroundColor: Colors.Primary,
     height: 140,
     padding: 25,
-    justifyContent: "flex-end",
+    justifyContent: 'flex-end',
   },
   title: {
     fontFamily: Fonts.OpenSansBold,
     fontSize: 24,
-    color: "white",
+    color: 'white',
   },
 });
 
@@ -46,11 +46,7 @@ const ShopDrawer: FC = () => {
             <DrawerItem
               {...props}
               icon={(drawerOptions) => (
-                <Ionicons
-                  name="log-out"
-                  size={22}
-                  color={drawerOptions.color}
-                />
+                <Ionicons name="log-out" size={22} color={drawerOptions.color} />
               )}
               label="Logout"
               onPress={logoutUser}
@@ -66,10 +62,10 @@ const ShopDrawer: FC = () => {
         name="ShopStack"
         component={ShopStack}
         options={{
-          drawerLabel: "Shop",
+          drawerLabel: 'Shop',
           drawerIcon: (drawerOptions) => (
             <Ionicons
-              name={Platform.OS === "android" ? "md-cart" : "ios-cart"}
+              name={Platform.OS === 'android' ? 'md-cart' : 'ios-cart'}
               size={22}
               color={drawerOptions.color}
             />
@@ -80,7 +76,7 @@ const ShopDrawer: FC = () => {
         name="OrdersStack"
         component={OrderStack}
         options={{
-          drawerLabel: "Your Orders",
+          drawerLabel: 'Your Orders',
           drawerIcon: (drawerOptions) => (
             <Ionicons name="list" size={22} color={drawerOptions.color} />
           ),
@@ -90,7 +86,7 @@ const ShopDrawer: FC = () => {
         name="UserProductsStack"
         component={UserProductsStack}
         options={{
-          drawerLabel: "Your Products",
+          drawerLabel: 'Your Products',
           drawerIcon: (drawerOptions) => (
             <Ionicons name="create" size={22} color={drawerOptions.color} />
           ),

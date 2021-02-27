@@ -1,4 +1,9 @@
-import React, { FC, useCallback, useLayoutEffect, useState } from "react";
+import { ErrorMessage } from '@hookform/error-message';
+import { useNavigation } from '@react-navigation/native';
+import { unwrapResult } from '@reduxjs/toolkit';
+import { LinearGradient } from 'expo-linear-gradient';
+import React, { FC, useCallback, useLayoutEffect, useState } from 'react';
+import { useForm, Controller } from 'react-hook-form';
 import {
   View,
   StyleSheet,
@@ -7,24 +12,19 @@ import {
   Button,
   Alert,
   ActivityIndicator,
-} from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import { useForm, Controller } from "react-hook-form";
-import { LinearGradient } from "expo-linear-gradient";
-import { unwrapResult } from "@reduxjs/toolkit";
+} from 'react-native';
 
-import AppCard from "../../components/ui/AppCard";
-import BodyText from "../../components/ui/text/BodyText";
-import { ErrorMessage } from "@hookform/error-message";
-import Colors from "../../constants/colors";
-import HeadingText from "../../components/ui/text/HeadingText";
-import { AuthScreenNavProp } from "../../navigation/AuthStack/types";
-import { signIn, signUp } from "../../store/thunks/auth";
-import { useAppDispatch } from "../../store/types";
-import { AuthInputPayload } from "../../types/auth";
-import { clearCartState } from "../../store/reducers/cart";
-import { clearOrdersState } from "../../store/reducers/orders";
-import { clearProductsState } from "../../store/reducers/products";
+import AppCard from '../../components/ui/AppCard';
+import BodyText from '../../components/ui/text/BodyText';
+import HeadingText from '../../components/ui/text/HeadingText';
+import Colors from '../../constants/colors';
+import { AuthScreenNavProp } from '../../navigation/AuthStack/types';
+import { clearCartState } from '../../store/reducers/cart';
+import { clearOrdersState } from '../../store/reducers/orders';
+import { clearProductsState } from '../../store/reducers/products';
+import { signIn, signUp } from '../../store/thunks/auth';
+import { useAppDispatch } from '../../store/types';
+import { AuthInputPayload } from '../../types/auth';
 
 interface InputData {
   email: string;
@@ -39,13 +39,13 @@ const AuthScreen: FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { control, errors, handleSubmit } = useForm<InputData>({
     defaultValues: {
-      email: "",
-      password: "",
+      email: '',
+      password: '',
     },
   });
 
   useLayoutEffect(() => {
-    navigation.setOptions({ headerTitle: "Authenticate" });
+    navigation.setOptions({ headerTitle: 'Authenticate' });
   }, [navigation]);
 
   const onAuthenticate = useCallback(
@@ -65,11 +65,11 @@ const AuthScreen: FC = () => {
         dispatch(clearOrdersState());
         dispatch(clearProductsState());
       } catch (error) {
-        Alert.alert("An error occurred", error.message, [{ text: "OK" }]);
+        Alert.alert('An error occurred', error.message, [{ text: 'OK' }]);
         setIsLoading(false);
       }
     },
-    [dispatch, isSignIn],
+    [dispatch, isSignIn]
   );
 
   let actionButtons: JSX.Element;
@@ -80,14 +80,14 @@ const AuthScreen: FC = () => {
       <>
         <View style={styles.buttonContainer}>
           <Button
-            title={isSignIn ? "SIGN IN" : "SIGN UP"}
+            title={isSignIn ? 'SIGN IN' : 'SIGN UP'}
             color={Colors.Primary}
             onPress={handleSubmit(onAuthenticate)}
           />
         </View>
         <View style={styles.buttonContainer}>
           <Button
-            title={`SWITCH TO ${isSignIn ? "SIGN UP" : "SIGN IN"}`}
+            title={`SWITCH TO ${isSignIn ? 'SIGN UP' : 'SIGN IN'}`}
             color={Colors.Accent}
             onPress={() => setIsSignIn((isSignIn) => !isSignIn)}
           />
@@ -97,22 +97,20 @@ const AuthScreen: FC = () => {
   }
 
   return (
-    <LinearGradient style={styles.screen} colors={["#ffedff", "#ffe3ff"]}>
+    <LinearGradient style={styles.screen} colors={['#ffedff', '#ffe3ff']}>
       <AppCard style={styles.formCard}>
         <ScrollView>
-          <HeadingText style={styles.formTitle}>
-            {isSignIn ? "Sign In" : "Sign Up"}
-          </HeadingText>
+          <HeadingText style={styles.formTitle}>{isSignIn ? 'Sign In' : 'Sign Up'}</HeadingText>
           <View style={styles.formControl}>
             <HeadingText style={styles.label}>Email</HeadingText>
             <Controller
               name="email"
               control={control}
               rules={{
-                required: "Email is required",
+                required: 'Email is required',
                 pattern: {
                   value: /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/,
-                  message: "Enter a valid email address",
+                  message: 'Enter a valid email address',
                 },
               }}
               render={(renderProps) => (
@@ -129,9 +127,7 @@ const AuthScreen: FC = () => {
             <ErrorMessage
               name="email"
               errors={errors}
-              render={({ message }) => (
-                <BodyText style={styles.inputError}>{message}</BodyText>
-              )}
+              render={({ message }) => <BodyText style={styles.inputError}>{message}</BodyText>}
             />
           </View>
           <View style={styles.formControl}>
@@ -140,10 +136,10 @@ const AuthScreen: FC = () => {
               name="password"
               control={control}
               rules={{
-                required: "Password is required",
+                required: 'Password is required',
                 minLength: {
                   value: 4,
-                  message: "Password must be 5 characters",
+                  message: 'Password must be 5 characters',
                 },
               }}
               render={(renderProps) => (
@@ -160,9 +156,7 @@ const AuthScreen: FC = () => {
             <ErrorMessage
               name="password"
               errors={errors}
-              render={({ message }) => (
-                <BodyText style={styles.inputError}>{message}</BodyText>
-              )}
+              render={({ message }) => <BodyText style={styles.inputError}>{message}</BodyText>}
             />
           </View>
           {actionButtons}
@@ -175,21 +169,21 @@ const AuthScreen: FC = () => {
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   formCard: {
-    width: "80%",
+    width: '80%',
     maxWidth: 400,
     maxHeight: 400,
     padding: 20,
   },
   formTitle: {
     marginBottom: 10,
-    textAlign: "center",
+    textAlign: 'center',
   },
   formControl: {
-    width: "100%",
+    width: '100%',
     marginBottom: 20,
   },
   label: {
@@ -198,11 +192,11 @@ const styles = StyleSheet.create({
   input: {
     paddingHorizontal: 2,
     paddingVertical: 5,
-    borderBottomColor: "#ccc",
+    borderBottomColor: '#ccc',
     borderBottomWidth: 1,
   },
   inputError: {
-    color: "red",
+    color: 'red',
   },
   buttonContainer: {
     marginTop: 10,

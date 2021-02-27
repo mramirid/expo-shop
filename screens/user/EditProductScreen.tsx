@@ -1,35 +1,22 @@
-import React, {
-  FC,
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useState,
-} from "react";
-import {
-  View,
-  ScrollView,
-  TextInput,
-  StyleSheet,
-  Alert,
-  ActivityIndicator,
-} from "react-native";
-import { useNavigation, useRoute } from "@react-navigation/native";
-import { HeaderButtons, Item } from "react-navigation-header-buttons";
-import { Controller, useForm } from "react-hook-form";
-import { ErrorMessage } from "@hookform/error-message";
-import { unwrapResult } from "@reduxjs/toolkit";
+import { ErrorMessage } from '@hookform/error-message';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { unwrapResult } from '@reduxjs/toolkit';
+import React, { FC, useCallback, useEffect, useLayoutEffect, useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { View, ScrollView, TextInput, StyleSheet, Alert, ActivityIndicator } from 'react-native';
+import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 
-import AppHeaderButton from "../../components/ui/AppHeaderButton";
-import HeadingText from "../../components/ui/text/HeadingText";
+import AppHeaderButton from '../../components/ui/AppHeaderButton';
+import BodyText from '../../components/ui/text/BodyText';
+import HeadingText from '../../components/ui/text/HeadingText';
+import Colors from '../../constants/colors';
+import useIsMounted from '../../hooks/useIsMounted';
 import {
   EditProductScreenNavProp,
   EditProductScreenRouteProp,
-} from "../../navigation/UserProductsStack/types";
-import { useAppDispatch } from "../../store/types";
-import BodyText from "../../components/ui/text/BodyText";
-import { updateProduct, addProduct } from "../../store/thunks/products";
-import Colors from "../../constants/colors";
-import useIsMounted from "../../hooks/useIsMounted";
+} from '../../navigation/UserProductsStack/types';
+import { updateProduct, addProduct } from '../../store/thunks/products';
+import { useAppDispatch } from '../../store/types';
 
 interface ProductInputData {
   title: string;
@@ -46,10 +33,10 @@ const EditProductScreen: FC = () => {
 
   const { handleSubmit, control, errors } = useForm<ProductInputData>({
     defaultValues: {
-      title: params?.product.title || "",
-      imageUrl: params?.product.imageUrl || "",
-      price: params?.product.price.toString() || "",
-      description: params?.product.description || "",
+      title: params?.product.title ?? '',
+      imageUrl: params?.product.imageUrl ?? '',
+      price: params?.product.price.toString() ?? '',
+      description: params?.product.description ?? '',
     },
   });
   const [isLoading, setIsLoading] = useState(false);
@@ -66,29 +53,27 @@ const EditProductScreen: FC = () => {
                 title: data.title,
                 imageUrl: data.imageUrl,
                 description: data.description,
-              }),
-            ),
+              })
+            )
           );
         } else {
-          unwrapResult(
-            await dispatch(addProduct({ ...data, price: +data.price })),
-          );
+          unwrapResult(await dispatch(addProduct({ ...data, price: +data.price })));
         }
         runInMounted(() => navigation.goBack());
       } catch (error) {
         runInMounted(() => {
-          Alert.alert("An error occurred", error.message, [{ text: "OK" }]);
+          Alert.alert('An error occurred', error.message, [{ text: 'OK' }]);
         });
       } finally {
         runInMounted(() => setIsLoading(false));
       }
     },
-    [dispatch, navigation, params, runInMounted],
+    [dispatch, navigation, params, runInMounted]
   );
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerTitle: params ? "Edit Product" : "Add Product",
+      headerTitle: params ? 'Edit Product' : 'Add Product',
     });
   }, [navigation, params]);
 
@@ -122,7 +107,7 @@ const EditProductScreen: FC = () => {
         <Controller
           name="title"
           control={control}
-          rules={{ required: "Title is required" }}
+          rules={{ required: 'Title is required' }}
           render={(renderProps) => (
             <TextInput
               {...renderProps}
@@ -136,9 +121,7 @@ const EditProductScreen: FC = () => {
         <ErrorMessage
           name="title"
           errors={errors}
-          render={({ message }) => (
-            <BodyText style={styles.inputError}>{message}</BodyText>
-          )}
+          render={({ message }) => <BodyText style={styles.inputError}>{message}</BodyText>}
         />
       </View>
       <View style={styles.formControl}>
@@ -146,7 +129,7 @@ const EditProductScreen: FC = () => {
         <Controller
           name="imageUrl"
           control={control}
-          rules={{ required: "Image URL is required" }}
+          rules={{ required: 'Image URL is required' }}
           render={(renderProps) => (
             <TextInput
               {...renderProps}
@@ -159,9 +142,7 @@ const EditProductScreen: FC = () => {
         <ErrorMessage
           name="imageUrl"
           errors={errors}
-          render={({ message }) => (
-            <BodyText style={styles.inputError}>{message}</BodyText>
-          )}
+          render={({ message }) => <BodyText style={styles.inputError}>{message}</BodyText>}
         />
       </View>
       <View style={styles.formControl}>
@@ -170,8 +151,8 @@ const EditProductScreen: FC = () => {
           name="price"
           control={control}
           rules={{
-            required: "Price is required",
-            validate: (val) => !isNaN(+val) || "Enter a valid number",
+            required: 'Price is required',
+            validate: (val) => !isNaN(+val) || 'Enter a valid number',
           }}
           render={(renderProps) => (
             <TextInput
@@ -187,9 +168,7 @@ const EditProductScreen: FC = () => {
         <ErrorMessage
           name="price"
           errors={errors}
-          render={({ message }) => (
-            <BodyText style={styles.inputError}>{message}</BodyText>
-          )}
+          render={({ message }) => <BodyText style={styles.inputError}>{message}</BodyText>}
         />
       </View>
       <View style={styles.formControl}>
@@ -197,7 +176,7 @@ const EditProductScreen: FC = () => {
         <Controller
           name="description"
           control={control}
-          rules={{ required: "Product description is required" }}
+          rules={{ required: 'Product description is required' }}
           render={(renderProps) => (
             <TextInput
               {...renderProps}
@@ -212,9 +191,7 @@ const EditProductScreen: FC = () => {
         <ErrorMessage
           name="description"
           errors={errors}
-          render={({ message }) => (
-            <BodyText style={styles.inputError}>{message}</BodyText>
-          )}
+          render={({ message }) => <BodyText style={styles.inputError}>{message}</BodyText>}
         />
       </View>
     </ScrollView>
@@ -224,15 +201,15 @@ const EditProductScreen: FC = () => {
 const styles = StyleSheet.create({
   screen1: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   screen2: {
     paddingTop: 20,
     paddingHorizontal: 20,
   },
   formControl: {
-    width: "100%",
+    width: '100%',
     marginBottom: 20,
   },
   label: {
@@ -241,11 +218,11 @@ const styles = StyleSheet.create({
   input: {
     paddingHorizontal: 2,
     paddingVertical: 5,
-    borderBottomColor: "#ccc",
+    borderBottomColor: '#ccc',
     borderBottomWidth: 1,
   },
   inputError: {
-    color: "red",
+    color: 'red',
   },
 });
 

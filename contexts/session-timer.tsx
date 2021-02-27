@@ -1,10 +1,10 @@
-import React, { FC, createContext, useCallback, useRef } from "react";
+import React, { FC, createContext, useCallback, useRef } from 'react';
 
-import { logout, selectIsAuth, selectUserAuth } from "../store/reducers/auth";
-import { clearCartState } from "../store/reducers/cart";
-import { clearOrdersState } from "../store/reducers/orders";
-import { clearProductsState } from "../store/reducers/products";
-import { useAppDispatch, useAppSelector } from "../store/types";
+import { logout, selectIsAuth, selectUserAuth } from '../store/reducers/auth';
+import { clearCartState } from '../store/reducers/cart';
+import { clearOrdersState } from '../store/reducers/orders';
+import { clearProductsState } from '../store/reducers/products';
+import { useAppDispatch, useAppSelector } from '../store/types';
 
 interface ContextType {
   trySetSessionTimer: () => void;

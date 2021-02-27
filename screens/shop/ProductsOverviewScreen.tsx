@@ -1,4 +1,6 @@
-import React, { FC, useCallback, useLayoutEffect, useState } from "react";
+import { useNavigation } from '@react-navigation/native';
+import { unwrapResult } from '@reduxjs/toolkit';
+import React, { FC, useCallback, useLayoutEffect, useState } from 'react';
 import {
   View,
   Button,
@@ -7,22 +9,20 @@ import {
   Alert,
   RefreshControl,
   ScrollView,
-} from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import { HeaderButtons, Item } from "react-navigation-header-buttons";
-import { unwrapResult } from "@reduxjs/toolkit";
+} from 'react-native';
+import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 
-import { selectProducts } from "../../store/reducers/products";
-import { useAppDispatch, useAppSelector } from "../../store/types";
-import { ProductsOverviewScreenNavProp } from "../../navigation/ShopStack/types";
-import ProductItem from "../../components/shop/ProductItem";
-import { addToCart } from "../../store/reducers/cart";
-import AppHeaderButton from "../../components/ui/AppHeaderButton";
-import Colors from "../../constants/colors";
-import { fetchProducts } from "../../store/thunks/products";
-import { HttpError } from "../../types/errors";
-import BodyText from "../../components/ui/text/BodyText";
-import useIsMounted from "../../hooks/useIsMounted";
+import ProductItem from '../../components/shop/ProductItem';
+import AppHeaderButton from '../../components/ui/AppHeaderButton';
+import BodyText from '../../components/ui/text/BodyText';
+import Colors from '../../constants/colors';
+import useIsMounted from '../../hooks/useIsMounted';
+import { ProductsOverviewScreenNavProp } from '../../navigation/ShopStack/types';
+import { addToCart } from '../../store/reducers/cart';
+import { selectProducts } from '../../store/reducers/products';
+import { fetchProducts } from '../../store/thunks/products';
+import { useAppDispatch, useAppSelector } from '../../store/types';
+import { HttpError } from '../../types/errors';
 
 const ProductsOverviewScreen: FC = () => {
   const dispatch = useAppDispatch();
@@ -41,7 +41,7 @@ const ProductsOverviewScreen: FC = () => {
     } catch (error) {
       runInMounted(() => {
         setError(error);
-        Alert.alert("An error occurred", error.message, [{ text: "OK" }]);
+        Alert.alert('An error occurred', error.message, [{ text: 'OK' }]);
       });
     } finally {
       runInMounted(() => setIsLoading(false));
@@ -51,23 +51,15 @@ const ProductsOverviewScreen: FC = () => {
   useLayoutEffect(() => {
     onfetchProducts();
     navigation.setOptions({
-      headerTitle: "All Products",
+      headerTitle: 'All Products',
       headerRight: () => (
         <HeaderButtons HeaderButtonComponent={AppHeaderButton}>
-          <Item
-            title="Cart"
-            iconName="cart"
-            onPress={() => navigation.navigate("CartScreen")}
-          />
+          <Item title="Cart" iconName="cart" onPress={() => navigation.navigate('CartScreen')} />
         </HeaderButtons>
       ),
       headerLeft: () => (
         <HeaderButtons HeaderButtonComponent={AppHeaderButton}>
-          <Item
-            title="Menu"
-            iconName="menu"
-            onPress={navigation.toggleDrawer}
-          />
+          <Item title="Menu" iconName="menu" onPress={navigation.toggleDrawer} />
         </HeaderButtons>
       ),
     });
@@ -77,9 +69,7 @@ const ProductsOverviewScreen: FC = () => {
     return (
       <ScrollView
         contentContainerStyle={styles.screen1}
-        refreshControl={
-          <RefreshControl refreshing={isLoading} onRefresh={onfetchProducts} />
-        }>
+        refreshControl={<RefreshControl refreshing={isLoading} onRefresh={onfetchProducts} />}>
         <BodyText>{error.message}</BodyText>
       </ScrollView>
     );
@@ -87,9 +77,7 @@ const ProductsOverviewScreen: FC = () => {
     return (
       <ScrollView
         contentContainerStyle={styles.screen1}
-        refreshControl={
-          <RefreshControl refreshing={isLoading} onRefresh={onfetchProducts} />
-        }>
+        refreshControl={<RefreshControl refreshing={isLoading} onRefresh={onfetchProducts} />}>
         <BodyText>No products available</BodyText>
       </ScrollView>
     );
@@ -106,14 +94,14 @@ const ProductsOverviewScreen: FC = () => {
           style={styles.productItems}
           product={item}
           onCardTap={() => {
-            navigation.navigate("ProductDetailScreen", { product: item });
+            navigation.navigate('ProductDetailScreen', { product: item });
           }}>
           <View style={styles.actionButtons}>
             <Button
               color={Colors.Accent}
               title="VIEW DETAILS"
               onPress={() => {
-                navigation.navigate("ProductDetailScreen", { product: item });
+                navigation.navigate('ProductDetailScreen', { product: item });
               }}
             />
           </View>
@@ -133,8 +121,8 @@ const ProductsOverviewScreen: FC = () => {
 const styles = StyleSheet.create({
   screen1: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   screen2: {
     paddingTop: 20,
@@ -144,7 +132,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   actionButtons: {
-    width: "40%",
+    width: '40%',
   },
 });
 

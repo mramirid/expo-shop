@@ -1,25 +1,25 @@
-import "react-native-gesture-handler";
-import React, { FC } from "react";
-import { ActivityIndicator } from "react-native";
-import { StatusBar } from "expo-status-bar";
-import AppLoading from "expo-app-loading";
-import { useFonts } from "expo-font";
-import { enableScreens } from "react-native-screens";
-import { PersistGate } from "redux-persist/integration/react";
-import { Provider } from "react-redux";
+import 'react-native-gesture-handler';
+import AppLoading from 'expo-app-loading';
+import { useFonts } from 'expo-font';
+import { StatusBar } from 'expo-status-bar';
+import React, { FC } from 'react';
+import { ActivityIndicator } from 'react-native';
+import { enableScreens } from 'react-native-screens';
+import { Provider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
 
-import Fonts from "./constants/fonts";
-import Colors from "./constants/colors";
-import { store, persistor } from "./store";
-import { SessionTimerContextProvider } from "./contexts/session-timer";
-import AppNavigator from "./navigation/AppNavigator";
+import Colors from './constants/colors';
+import Fonts from './constants/fonts';
+import { SessionTimerContextProvider } from './contexts/session-timer';
+import AppNavigator from './navigation/AppNavigator';
+import { store, persistor } from './store';
 
 enableScreens();
 
 const App: FC = () => {
   const [isFontsLoaded] = useFonts({
-    [Fonts.OpenSansRegular]: require("./assets/fonts/OpenSans-Regular.ttf"),
-    [Fonts.OpenSansBold]: require("./assets/fonts/OpenSans-Bold.ttf"),
+    [Fonts.OpenSansRegular]: require('./assets/fonts/OpenSans-Regular.ttf'),
+    [Fonts.OpenSansBold]: require('./assets/fonts/OpenSans-Bold.ttf'),
   });
 
   if (!isFontsLoaded) {

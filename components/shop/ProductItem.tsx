@@ -1,4 +1,4 @@
-import React, { FC, JSXElementConstructor } from "react";
+import React, { FC, JSXElementConstructor } from 'react';
 import {
   View,
   StyleSheet,
@@ -9,12 +9,12 @@ import {
   Platform,
   TouchableNativeFeedback,
   ViewStyle,
-} from "react-native";
+} from 'react-native';
 
-import Product from "../../types/product";
-import AppCard from "../ui/AppCard";
-import BodyText from "../ui/text/BodyText";
-import HeadingText from "../ui/text/HeadingText";
+import Product from '../../types/product';
+import AppCard from '../ui/AppCard';
+import BodyText from '../ui/text/BodyText';
+import HeadingText from '../ui/text/HeadingText';
 
 interface ProductItemProps {
   product: Product;
@@ -23,10 +23,8 @@ interface ProductItemProps {
 }
 
 const ProductItem: FC<ProductItemProps> = (props) => {
-  let Touchable: JSXElementConstructor<
-    TouchableOpacityProps | TouchableNativeFeedbackProps
-  >;
-  if (Platform.OS === "android" && Platform.Version >= 21) {
+  let Touchable: JSXElementConstructor<TouchableOpacityProps | TouchableNativeFeedbackProps>;
+  if (Platform.OS === 'android' && Platform.Version >= 21) {
     Touchable = TouchableNativeFeedback;
   } else {
     Touchable = TouchableOpacity;
@@ -35,17 +33,10 @@ const ProductItem: FC<ProductItemProps> = (props) => {
     <AppCard style={{ ...styles.product, ...props.style }}>
       <Touchable onPress={props.onCardTap} useForeground>
         <View>
-          <Image
-            style={styles.image}
-            source={{ uri: props.product.imageUrl }}
-          />
+          <Image style={styles.image} source={{ uri: props.product.imageUrl }} />
           <View style={styles.details}>
-            <HeadingText style={styles.title}>
-              {props.product.title}
-            </HeadingText>
-            <BodyText style={styles.price}>
-              ${props.product.price.toFixed(2)}
-            </BodyText>
+            <HeadingText style={styles.title}>{props.product.title}</HeadingText>
+            <BodyText style={styles.price}>${props.product.price.toFixed(2)}</BodyText>
           </View>
           <View style={styles.actions}>{props.children}</View>
         </View>
@@ -59,12 +50,12 @@ const styles = StyleSheet.create({
     height: 330,
   },
   image: {
-    width: "100%",
-    height: "60%",
+    width: '100%',
+    height: '60%',
   },
   details: {
-    alignItems: "center",
-    height: "17%",
+    alignItems: 'center',
+    height: '17%',
     padding: 10,
   },
   title: {
@@ -72,13 +63,13 @@ const styles = StyleSheet.create({
   },
   price: {
     fontSize: 14,
-    color: "#888",
+    color: '#888',
   },
   actions: {
-    height: "23%",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    height: '23%',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     paddingHorizontal: 20,
   },
 });

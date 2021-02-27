@@ -1,24 +1,18 @@
-import React, { FC, useCallback, useLayoutEffect, useState } from "react";
-import {
-  Alert,
-  FlatList,
-  RefreshControl,
-  ScrollView,
-  StyleSheet,
-} from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import { HeaderButtons, Item } from "react-navigation-header-buttons";
-import { unwrapResult } from "@reduxjs/toolkit";
+import { useNavigation } from '@react-navigation/native';
+import { unwrapResult } from '@reduxjs/toolkit';
+import React, { FC, useCallback, useLayoutEffect, useState } from 'react';
+import { Alert, FlatList, RefreshControl, ScrollView, StyleSheet } from 'react-native';
+import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 
-import { useAppDispatch, useAppSelector } from "../../store/types";
-import { selectOrders } from "../../store/reducers/orders";
-import { OrderScreenNavProp } from "../../navigation/OrdersStack/types";
-import AppHeaderButton from "../../components/ui/AppHeaderButton";
-import OrderItem from "../../components/shop/OrderItem";
-import BodyText from "../../components/ui/text/BodyText";
-import { fetchOrders } from "../../store/thunks/orders";
-import { HttpError } from "../../types/errors";
-import useIsMounted from "../../hooks/useIsMounted";
+import OrderItem from '../../components/shop/OrderItem';
+import AppHeaderButton from '../../components/ui/AppHeaderButton';
+import BodyText from '../../components/ui/text/BodyText';
+import useIsMounted from '../../hooks/useIsMounted';
+import { OrderScreenNavProp } from '../../navigation/OrdersStack/types';
+import { selectOrders } from '../../store/reducers/orders';
+import { fetchOrders } from '../../store/thunks/orders';
+import { useAppDispatch, useAppSelector } from '../../store/types';
+import { HttpError } from '../../types/errors';
 
 const OrdersScreen: FC = () => {
   const dispatch = useAppDispatch();
@@ -37,7 +31,7 @@ const OrdersScreen: FC = () => {
       .catch((error: HttpError) => {
         runInMounted(() => {
           setError(error);
-          Alert.alert("An error occurred", error.message, [{ text: "OK" }]);
+          Alert.alert('An error occurred', error.message, [{ text: 'OK' }]);
         });
       })
       .finally(() => runInMounted(() => setIsLoading(false)));
@@ -46,14 +40,10 @@ const OrdersScreen: FC = () => {
   useLayoutEffect(() => {
     onFetchOrders();
     navigation.setOptions({
-      headerTitle: "Your Orders",
+      headerTitle: 'Your Orders',
       headerLeft: () => (
         <HeaderButtons HeaderButtonComponent={AppHeaderButton}>
-          <Item
-            title="Menu"
-            iconName="menu"
-            onPress={navigation.toggleDrawer}
-          />
+          <Item title="Menu" iconName="menu" onPress={navigation.toggleDrawer} />
         </HeaderButtons>
       ),
     });
@@ -63,9 +53,7 @@ const OrdersScreen: FC = () => {
     return (
       <ScrollView
         contentContainerStyle={styles.screen1}
-        refreshControl={
-          <RefreshControl refreshing={isLoading} onRefresh={onFetchOrders} />
-        }>
+        refreshControl={<RefreshControl refreshing={isLoading} onRefresh={onFetchOrders} />}>
         <BodyText>{error.message}</BodyText>
       </ScrollView>
     );
@@ -73,9 +61,7 @@ const OrdersScreen: FC = () => {
     return (
       <ScrollView
         contentContainerStyle={styles.screen1}
-        refreshControl={
-          <RefreshControl refreshing={isLoading} onRefresh={onFetchOrders} />
-        }>
+        refreshControl={<RefreshControl refreshing={isLoading} onRefresh={onFetchOrders} />}>
         <BodyText>No orders found. Maybe start adding some!</BodyText>
       </ScrollView>
     );
@@ -85,12 +71,8 @@ const OrdersScreen: FC = () => {
     <FlatList
       contentContainerStyle={styles.screen2}
       data={orders}
-      refreshControl={
-        <RefreshControl refreshing={isLoading} onRefresh={onFetchOrders} />
-      }
-      renderItem={({ item }) => (
-        <OrderItem style={styles.orderItems} order={item} />
-      )}
+      refreshControl={<RefreshControl refreshing={isLoading} onRefresh={onFetchOrders} />}
+      renderItem={({ item }) => <OrderItem style={styles.orderItems} order={item} />}
     />
   );
 };
@@ -98,8 +80,8 @@ const OrdersScreen: FC = () => {
 const styles = StyleSheet.create({
   screen1: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   screen2: {
     paddingTop: 20,

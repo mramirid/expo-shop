@@ -1,11 +1,11 @@
-import React, { FC, useContext, useEffect } from "react";
-import { NavigationContainer } from "@react-navigation/native";
+import { NavigationContainer } from '@react-navigation/native';
+import React, { FC, useContext, useEffect } from 'react';
 
-import ShopDrawer from "./ShopDrawer/ShopDrawer";
-import AuthStack from "./AuthStack/AuthStack";
-import { selectIsAuth } from "../store/reducers/auth";
-import { useAppSelector } from "../store/types";
-import { SessionTimerContext } from "../contexts/session-timer";
+import { SessionTimerContext } from '../contexts/session-timer';
+import { selectIsAuth } from '../store/reducers/auth';
+import { useAppSelector } from '../store/types';
+import AuthStack from './AuthStack/AuthStack';
+import ShopDrawer from './ShopDrawer/ShopDrawer';
 
 const AppNavigator: FC = () => {
   const isAuth = useAppSelector(selectIsAuth);
@@ -13,11 +13,7 @@ const AppNavigator: FC = () => {
 
   useEffect(trySetSessionTimer, [trySetSessionTimer]);
 
-  return (
-    <NavigationContainer>
-      {isAuth ? <ShopDrawer /> : <AuthStack />}
-    </NavigationContainer>
-  );
+  return <NavigationContainer>{isAuth ? <ShopDrawer /> : <AuthStack />}</NavigationContainer>;
 };
 
 export default AppNavigator;

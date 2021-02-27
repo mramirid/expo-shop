@@ -1,10 +1,10 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { RootState } from "../types";
-import Cart from "../../types/cart";
-import Product from "../../types/product";
-import { deleteProduct, updateProduct } from "../thunks/products";
-import { addOrder } from "../thunks/orders";
+import Cart from '../../types/cart';
+import Product from '../../types/product';
+import { addOrder } from '../thunks/orders';
+import { deleteProduct, updateProduct } from '../thunks/products';
+import { RootState } from '../types';
 
 const initialState: Cart = {
   items: [],
@@ -12,13 +12,11 @@ const initialState: Cart = {
 };
 
 const cartSlice = createSlice({
-  name: "cart",
+  name: 'cart',
   initialState,
   reducers: {
     addToCart(state, action: PayloadAction<Product>) {
-      const itemIndex = state.items.findIndex(
-        (item) => item.productId === action.payload.id,
-      );
+      const itemIndex = state.items.findIndex((item) => item.productId === action.payload.id);
       if (itemIndex >= 0) {
         state.items[itemIndex].qty++;
       } else {
@@ -32,9 +30,7 @@ const cartSlice = createSlice({
       state.totalAmount += action.payload.price;
     },
     removeItem(state, action: PayloadAction<string>) {
-      const itemIndex = state.items.findIndex(
-        (item) => item.productId === action.payload,
-      );
+      const itemIndex = state.items.findIndex((item) => item.productId === action.payload);
       state.totalAmount -= state.items[itemIndex].price;
       if (state.items[itemIndex].qty > 1) {
         state.items[itemIndex].qty--;
@@ -50,20 +46,17 @@ const cartSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(updateProduct.fulfilled, (state, { payload }) => {
-        const itemIndex = state.items.findIndex(
-          (item) => item.productId === payload.productId,
-        );
+        const itemIndex = state.items.findIndex((item) => item.productId === payload.productId);
         if (itemIndex >= 0) {
           state.items[itemIndex].title = payload.title;
         }
       })
       .addCase(deleteProduct.fulfilled, (state, action) => {
         const itemIndex = state.items.findIndex(
-          (item) => item.productId === action.payload.productId,
+          (item) => item.productId === action.payload.productId
         );
         if (itemIndex >= 0) {
-          state.totalAmount -=
-            state.items[itemIndex].price * state.items[itemIndex].qty;
+          state.totalAmount -= state.items[itemIndex].price * state.items[itemIndex].qty;
           state.items.splice(itemIndex, 1);
         }
       })

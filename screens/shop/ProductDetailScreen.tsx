@@ -1,16 +1,16 @@
-import React, { FC, useLayoutEffect } from "react";
-import { useNavigation, useRoute } from "@react-navigation/native";
-import { View, ScrollView, Image, Button, StyleSheet } from "react-native";
+import { useNavigation, useRoute } from '@react-navigation/native';
+import React, { FC, useLayoutEffect } from 'react';
+import { View, ScrollView, Image, Button, StyleSheet } from 'react-native';
 
+import BodyText from '../../components/ui/text/BodyText';
+import HeadingText from '../../components/ui/text/HeadingText';
+import Colors from '../../constants/colors';
 import {
   ProductDetailScreenNavProp,
   ProductDetailScreenRouteProp,
-} from "../../navigation/ShopStack/types";
-import BodyText from "../../components/ui/text/BodyText";
-import Colors from "../../constants/colors";
-import HeadingText from "../../components/ui/text/HeadingText";
-import { useAppDispatch } from "../../store/types";
-import { addToCart } from "../../store/reducers/cart";
+} from '../../navigation/ShopStack/types';
+import { addToCart } from '../../store/reducers/cart';
+import { useAppDispatch } from '../../store/types';
 
 const ProductDetailScreen: FC = () => {
   const dispatch = useAppDispatch();
@@ -31,34 +31,30 @@ const ProductDetailScreen: FC = () => {
           onPress={() => dispatch(addToCart(params.product))}
         />
       </View>
-      <HeadingText style={styles.price}>
-        ${params.product.price.toFixed(2)}
-      </HeadingText>
-      <BodyText style={styles.description}>
-        {params.product.description}
-      </BodyText>
+      <HeadingText style={styles.price}>${params.product.price.toFixed(2)}</HeadingText>
+      <BodyText style={styles.description}>{params.product.description}</BodyText>
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   image: {
-    width: "100%",
+    width: '100%',
     height: 300,
   },
   action: {
     marginTop: 20,
-    alignItems: "center",
+    alignItems: 'center',
   },
   price: {
     fontSize: 20,
-    color: "#888",
-    textAlign: "center",
+    color: '#888',
+    textAlign: 'center',
     marginVertical: 20,
   },
   description: {
     fontSize: 14,
-    textAlign: "center",
+    textAlign: 'center',
     marginHorizontal: 20,
   },
 });

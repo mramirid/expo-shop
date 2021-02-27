@@ -1,4 +1,4 @@
-import Cart from "./cart";
+import Cart from './cart';
 
 export interface OrderData extends Cart {
   date: number;

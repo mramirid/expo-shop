@@ -1,9 +1,9 @@
-import React, { FC } from "react";
-import { createStackNavigator } from "@react-navigation/stack";
+import { createStackNavigator } from '@react-navigation/stack';
+import React, { FC } from 'react';
 
-import { defaultStackScreenOptions } from "../contants";
-import { AuthStackParamList } from "./types";
-import AuthScreen from "../../screens/user/AuthScreen";
+import AuthScreen from '../../screens/user/AuthScreen';
+import { defaultStackScreenOptions } from '../contants';
+import { AuthStackParamList } from './types';
 
 const Stack = createStackNavigator<AuthStackParamList>();
 
